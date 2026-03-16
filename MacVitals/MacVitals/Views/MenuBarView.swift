@@ -49,6 +49,7 @@ struct MenuBarView: View {
                     .foregroundStyle(.secondary)
             }
             .buttonStyle(.plain)
+            .accessibilityLabel("Settings")
 
             Spacer()
 
@@ -63,6 +64,7 @@ struct MenuBarView: View {
                     .foregroundStyle(.secondary)
             }
             .buttonStyle(.plain)
+            .accessibilityLabel("Open GitHub")
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
