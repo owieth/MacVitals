@@ -1,7 +1,6 @@
 import Foundation
 import IOKit
 
-nonisolated(unsafe) let machTaskSelf = mach_task_self_
 private let ioMainPort = kIOMainPortDefault
 
 struct SMCKeyData {
@@ -52,7 +51,8 @@ class SMCClient {
             ioMainPort, IOServiceMatching("AppleSMC")
         )
         guard service != 0 else { return false }
-        let result = IOServiceOpen(service, machTaskSelf, 0, &connection)
+        let taskSelf = mach_task_self_
+        let result = IOServiceOpen(service, taskSelf, 0, &connection)
         IOObjectRelease(service)
         isOpen = result == KERN_SUCCESS
         return isOpen
