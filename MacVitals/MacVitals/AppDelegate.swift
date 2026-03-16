@@ -1,11 +1,15 @@
 import SwiftUI
 import AppKit
+import Combine
 
 @MainActor
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
     private var popover: NSPopover?
     private var isQuittingFromMenu = false
+    private var snapshotCancellable: AnyCancellable?
+    private var displayModeCancellable: AnyCancellable?
+    private var tempUnitCancellable: AnyCancellable?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -15,6 +19,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 systemSymbolName: "gauge.with.dots.needle.bottom.50percent",
                 accessibilityDescription: "MacVitals"
             )
+            button.imagePosition = .imageLeading
             button.action = #selector(statusItemClicked)
             button.target = self
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
@@ -31,6 +36,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.setActivationPolicy(.accessory)
 
         SystemMonitor.shared.start()
+
+        snapshotCancellable = SystemMonitor.shared.$snapshot
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.updateMenuBarDisplay()
+            }
+
+        displayModeCancellable = UserPreferences.shared.$menuBarDisplayMode
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.updateMenuBarDisplay()
+            }
+
+        tempUnitCancellable = UserPreferences.shared.$temperatureUnit
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.updateMenuBarDisplay()
+            }
     }
 
     @objc private func statusItemClicked() {
@@ -70,6 +93,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
             NSApp.activate(ignoringOtherApps: true)
+        }
+    }
+
+    private func updateMenuBarDisplay() {
+        guard let button = statusItem?.button else { return }
+        let mode = UserPreferences.shared.menuBarDisplayMode
+
+        switch mode {
+        case .iconOnly:
+            button.title = ""
+        case .iconAndCPU:
+            if let snapshot = SystemMonitor.shared.snapshot {
+                button.title = " " + Formatters.percentage(snapshot.cpu.totalUsage)
+            }
+        case .iconAndTemp:
+            if let snapshot = SystemMonitor.shared.snapshot,
+               let temp = snapshot.thermal.cpuTemperature {
+                button.title = " " + Formatters.temperature(temp, unit: UserPreferences.shared.temperatureUnit)
+            } else {
+                button.title = " --"
+            }
+        }
+
+        if mode != .iconOnly {
+            button.font = NSFont.monospacedDigitSystemFont(ofSize: NSFont.systemFontSize, weight: .regular)
         }
     }
 
