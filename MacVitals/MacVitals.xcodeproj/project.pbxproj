@@ -349,6 +349,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.olivierwinkler.MacVitals;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = MacVitals/Utilities/MachCompat.h;
 				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
@@ -376,6 +377,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.olivierwinkler.MacVitals;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = MacVitals/Utilities/MachCompat.h;
 				SWIFT_VERSION = 6.0;
 			};
 			name = Release;

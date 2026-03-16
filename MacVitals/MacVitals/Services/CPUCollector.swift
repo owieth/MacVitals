@@ -23,7 +23,7 @@ struct CPUCollector {
 
         defer {
             vm_deallocate(
-                mach_task_self_,
+                mv_mach_task_self(),
                 vm_address_t(bitPattern: cpuInfo),
                 vm_size_t(Int(numCPUInfo) * MemoryLayout<integer_t>.size)
             )
