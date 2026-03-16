@@ -9,10 +9,17 @@ class SystemMonitor: ObservableObject {
     private var timer: Timer?
     private var cpuCollector = CPUCollector()
     private let memoryCollector = MemoryCollector()
+    private var storageCollector = StorageCollector()
+    private let batteryCollector = BatteryCollector()
+    private let thermalCollector = ThermalCollector()
+    private let processCollector = ProcessCollector()
+    private let smcClient = SMCClient()
 
     private init() {}
 
     func start() {
+        _ = smcClient.open()
+
         let interval = UserPreferences.shared.refreshRate.rawValue
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             Task { @MainActor in
@@ -25,6 +32,7 @@ class SystemMonitor: ObservableObject {
     func stop() {
         timer?.invalidate()
         timer = nil
+        smcClient.close()
     }
 
     func restart() {
@@ -35,15 +43,40 @@ class SystemMonitor: ObservableObject {
     private func collectSnapshot() {
         let cpu = cpuCollector.collect()
         let memory = memoryCollector.collect()
+        let storage = storageCollector.collect()
+        let battery = batteryCollector.collect()
+        let thermal = thermalCollector.collect(using: smcClient)
         let uptime = ProcessInfo.processInfo.systemUptime
+
+        let topByCPU = processCollector.collectTopByCPU()
+        let topByMemory = processCollector.collectTopByMemory()
+
+        let cpuWithProcesses = CPUInfo(
+            totalUsage: cpu.totalUsage,
+            userUsage: cpu.userUsage,
+            systemUsage: cpu.systemUsage,
+            coreUsages: cpu.coreUsages,
+            topProcesses: topByCPU
+        )
+
+        let memoryWithProcesses = MemoryInfo(
+            total: memory.total,
+            used: memory.used,
+            active: memory.active,
+            wired: memory.wired,
+            compressed: memory.compressed,
+            available: memory.available,
+            pressure: memory.pressure,
+            topProcesses: topByMemory
+        )
 
         snapshot = SystemSnapshot(
             timestamp: Date(),
-            cpu: cpu,
-            memory: memory,
-            storage: .empty,
-            battery: nil,
-            thermal: .empty,
+            cpu: cpuWithProcesses,
+            memory: memoryWithProcesses,
+            storage: storage,
+            battery: battery,
+            thermal: thermal,
             uptime: uptime
         )
     }
