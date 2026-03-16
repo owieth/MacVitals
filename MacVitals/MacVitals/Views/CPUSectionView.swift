@@ -3,6 +3,8 @@ import SwiftUI
 struct CPUSectionView: View {
     let cpu: CPUInfo
 
+    private var useGrid: Bool { cpu.coreUsages.count > 8 }
+
     var body: some View {
         DisclosureGroup("CPU") {
             VStack(alignment: .leading, spacing: 8) {
@@ -13,22 +15,7 @@ struct CPUSectionView: View {
                 }
 
                 if !cpu.coreUsages.isEmpty {
-                    VStack(spacing: 2) {
-                        ForEach(Array(cpu.coreUsages.enumerated()), id: \.offset) { index, usage in
-                            HStack(spacing: 4) {
-                                Text("\(index)")
-                                    .font(.system(size: 9).monospacedDigit())
-                                    .foregroundStyle(.secondary)
-                                    .frame(width: 20, alignment: .trailing)
-                                ProgressView(value: min(max(usage / 100, 0), 1))
-                                    .tint(coreColor(usage))
-                                Text(Formatters.percentage(usage))
-                                    .font(.system(size: 9).monospacedDigit())
-                                    .foregroundStyle(.secondary)
-                                    .frame(width: 30, alignment: .trailing)
-                            }
-                        }
-                    }
+                    coreUsagesView
                 }
 
                 if !cpu.topProcesses.isEmpty {
@@ -39,6 +26,42 @@ struct CPUSectionView: View {
                 }
             }
             .padding(.top, 4)
+        }
+    }
+
+    @ViewBuilder
+    private var coreUsagesView: some View {
+        if useGrid {
+            let columns = [
+                GridItem(.flexible(), spacing: 12),
+                GridItem(.flexible(), spacing: 12)
+            ]
+            LazyVGrid(columns: columns, spacing: 2) {
+                ForEach(Array(cpu.coreUsages.enumerated()), id: \.offset) { index, usage in
+                    coreBar(index: index, usage: usage)
+                }
+            }
+        } else {
+            VStack(spacing: 2) {
+                ForEach(Array(cpu.coreUsages.enumerated()), id: \.offset) { index, usage in
+                    coreBar(index: index, usage: usage)
+                }
+            }
+        }
+    }
+
+    private func coreBar(index: Int, usage: Double) -> some View {
+        HStack(spacing: 4) {
+            Text("\(index)")
+                .font(.system(size: 9).monospacedDigit())
+                .foregroundStyle(.secondary)
+                .frame(width: 16, alignment: .trailing)
+            ProgressView(value: min(max(usage / 100, 0), 1))
+                .tint(coreColor(usage))
+            Text(Formatters.percentage(usage))
+                .font(.system(size: 9).monospacedDigit())
+                .foregroundStyle(.secondary)
+                .frame(width: 28, alignment: .trailing)
         }
     }
 
