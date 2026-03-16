@@ -1,5 +1,5 @@
 import Foundation
-@preconcurrency import Darwin
+import Darwin
 
 struct ProcessCollector {
     func collectTopByCPU(limit: Int = 5) -> [ProcessSnapshot] {
@@ -42,7 +42,9 @@ struct ProcessCollector {
 
         var nameBuffer = [CChar](repeating: 0, count: Int(MAXPATHLEN))
         proc_pidpath(pid, &nameBuffer, UInt32(MAXPATHLEN))
-        let path = String(cString: nameBuffer)
+        let path = nameBuffer.withUnsafeBufferPointer { buf in
+            String(decoding: buf.prefix(while: { $0 != 0 }).map { UInt8(bitPattern: $0) }, as: UTF8.self)
+        }
         let name = (path as NSString).lastPathComponent
         guard !name.isEmpty else { return nil }
 

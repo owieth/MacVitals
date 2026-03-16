@@ -1,5 +1,7 @@
 import Foundation
-@preconcurrency import IOKit.ps
+import IOKit.ps
+
+private let batteryIOMainPort = kIOMainPortDefault
 
 struct BatteryCollector {
     func collect() -> BatteryInfo? {
@@ -28,7 +30,7 @@ struct BatteryCollector {
         var temperature: Double?
 
         let matchingDict = IOServiceMatching("AppleSmartBattery")
-        let service = IOServiceGetMatchingService(kIOMasterPortDefault, matchingDict)
+        let service = IOServiceGetMatchingService(batteryIOMainPort, matchingDict)
         if service != 0 {
             var props: Unmanaged<CFMutableDictionary>?
             if IORegistryEntryCreateCFProperties(

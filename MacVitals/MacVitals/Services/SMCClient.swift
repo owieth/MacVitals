@@ -1,5 +1,8 @@
 import Foundation
-@preconcurrency import IOKit
+import IOKit
+
+private let machTaskSelf = mach_task_self_
+private let ioMainPort = kIOMainPortDefault
 
 struct SMCKeyData {
     struct Version {
@@ -46,10 +49,10 @@ class SMCClient {
 
     func open() -> Bool {
         let service = IOServiceGetMatchingService(
-            kIOMasterPortDefault, IOServiceMatching("AppleSMC")
+            ioMainPort, IOServiceMatching("AppleSMC")
         )
         guard service != 0 else { return false }
-        let result = IOServiceOpen(service, mach_task_self_, 0, &connection)
+        let result = IOServiceOpen(service, machTaskSelf, 0, &connection)
         IOObjectRelease(service)
         isOpen = result == KERN_SUCCESS
         return isOpen

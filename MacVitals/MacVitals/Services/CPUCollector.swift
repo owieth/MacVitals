@@ -1,5 +1,7 @@
 import Foundation
-@preconcurrency import Darwin
+import Darwin
+
+private let cpuMachTaskSelf = mach_task_self_
 
 struct CPUCollector {
     private var previousTicks: [(user: UInt64, system: UInt64, idle: UInt64, nice: UInt64)] = []
@@ -23,7 +25,7 @@ struct CPUCollector {
 
         defer {
             vm_deallocate(
-                mach_task_self_,
+                cpuMachTaskSelf,
                 vm_address_t(bitPattern: cpuInfo),
                 vm_size_t(Int(numCPUInfo) * MemoryLayout<integer_t>.size)
             )
