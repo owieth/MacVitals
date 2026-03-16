@@ -1,7 +1,7 @@
 import Foundation
 import Darwin
 
-private let cpuMachTaskSelf = mach_task_self_
+nonisolated(unsafe) let cpuMachTaskSelf = mach_task_self_
 
 struct CPUCollector {
     private var previousTicks: [(user: UInt64, system: UInt64, idle: UInt64, nice: UInt64)] = []

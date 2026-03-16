@@ -1,7 +1,7 @@
 import Foundation
 import IOKit
 
-private let machTaskSelf = mach_task_self_
+nonisolated(unsafe) let machTaskSelf = mach_task_self_
 private let ioMainPort = kIOMainPortDefault
 
 struct SMCKeyData {
