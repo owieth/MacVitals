@@ -1,5 +1,5 @@
 import Foundation
-import Darwin
+@preconcurrency import Darwin
 
 struct MemoryCollector {
     func collect() -> MemoryInfo {

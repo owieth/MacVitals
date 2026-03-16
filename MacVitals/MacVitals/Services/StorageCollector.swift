@@ -1,5 +1,5 @@
 import Foundation
-import IOKit
+@preconcurrency import IOKit
 
 struct StorageCollector {
     private var previousReadBytes: UInt64 = 0

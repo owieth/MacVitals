@@ -1,5 +1,5 @@
 import Foundation
-import Darwin
+@preconcurrency import Darwin
 
 struct ProcessCollector {
     func collectTopByCPU(limit: Int = 5) -> [ProcessSnapshot] {

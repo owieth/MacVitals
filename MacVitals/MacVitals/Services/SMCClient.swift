@@ -1,5 +1,5 @@
 import Foundation
-import IOKit
+@preconcurrency import IOKit
 
 struct SMCKeyData {
     struct Version {

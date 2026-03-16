@@ -1,5 +1,5 @@
 import Foundation
-import IOKit.ps
+@preconcurrency import IOKit.ps
 
 struct BatteryCollector {
     func collect() -> BatteryInfo? {

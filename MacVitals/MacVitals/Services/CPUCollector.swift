@@ -1,5 +1,5 @@
 import Foundation
-import Darwin
+@preconcurrency import Darwin
 
 struct CPUCollector {
     private var previousTicks: [(user: UInt64, system: UInt64, idle: UInt64, nice: UInt64)] = []
