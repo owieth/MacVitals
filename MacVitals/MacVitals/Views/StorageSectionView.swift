@@ -1,0 +1,29 @@
+import SwiftUI
+
+struct StorageSectionView: View {
+    let storage: StorageInfo
+
+    var body: some View {
+        DisclosureGroup("Storage") {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text("\(Formatters.bytesDecimal(storage.used)) / \(Formatters.bytesDecimal(storage.total))")
+                        .font(.caption.monospacedDigit())
+                    Spacer()
+                    Text(Formatters.percentage(storage.usagePercentage))
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                }
+
+                ProgressView(value: min(max(storage.usagePercentage / 100, 0), 1))
+                    .tint(storage.usagePercentage > 90 ? .red : .accentColor)
+
+                HStack(spacing: 16) {
+                    StatLabel(title: "Read", value: Formatters.bytesPerSecond(storage.readBytesPerSec))
+                    StatLabel(title: "Write", value: Formatters.bytesPerSecond(storage.writeBytesPerSec))
+                }
+            }
+            .padding(.top, 4)
+        }
+    }
+}
