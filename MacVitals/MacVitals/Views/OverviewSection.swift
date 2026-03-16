@@ -6,10 +6,15 @@ struct OverviewSection: View {
     var body: some View {
         VStack(spacing: 8) {
             if let snapshot {
-                Text("Uptime: \(Formatters.uptime(snapshot.uptime))")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack(spacing: 4) {
+                    Image(systemName: "clock")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                    Text("Uptime: \(Formatters.uptime(snapshot.uptime))")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                }
 
                 HStack(spacing: 16) {
                     MetricBar(
@@ -24,9 +29,13 @@ struct OverviewSection: View {
                     )
                 }
             } else {
-                Text("Loading...")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                HStack {
+                    ProgressView()
+                        .controlSize(.small)
+                    Text("Loading...")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
     }
