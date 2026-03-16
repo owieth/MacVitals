@@ -7,6 +7,8 @@ class SystemMonitor: ObservableObject {
     @Published var snapshot: SystemSnapshot?
 
     private var timer: Timer?
+    private var cpuCollector = CPUCollector()
+    private let memoryCollector = MemoryCollector()
 
     private init() {}
 
@@ -31,12 +33,14 @@ class SystemMonitor: ObservableObject {
     }
 
     private func collectSnapshot() {
+        let cpu = cpuCollector.collect()
+        let memory = memoryCollector.collect()
         let uptime = ProcessInfo.processInfo.systemUptime
 
         snapshot = SystemSnapshot(
             timestamp: Date(),
-            cpu: .empty,
-            memory: .empty,
+            cpu: cpu,
+            memory: memory,
             storage: .empty,
             battery: nil,
             thermal: .empty,
