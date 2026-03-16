@@ -81,8 +81,9 @@ struct AboutSettingsView: View {
             Text(Constants.appName)
                 .font(.title2.bold())
 
-            if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-                Text("Version \(version)")
+            if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
+               let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+                Text("Version \(version) (\(build))")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
