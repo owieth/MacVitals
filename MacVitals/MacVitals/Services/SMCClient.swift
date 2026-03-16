@@ -51,8 +51,7 @@ class SMCClient {
             ioMainPort, IOServiceMatching("AppleSMC")
         )
         guard service != 0 else { return false }
-        let taskSelf = mach_task_self_
-        let result = IOServiceOpen(service, taskSelf, 0, &connection)
+        let result = IOServiceOpen(service, mv_mach_task_self(), 0, &connection)
         IOObjectRelease(service)
         isOpen = result == KERN_SUCCESS
         return isOpen

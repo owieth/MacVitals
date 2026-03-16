@@ -22,9 +22,8 @@ struct CPUCollector {
         }
 
         defer {
-            let taskSelf = mach_task_self_
             vm_deallocate(
-                taskSelf,
+                mv_mach_task_self(),
                 vm_address_t(bitPattern: cpuInfo),
                 vm_size_t(Int(numCPUInfo) * MemoryLayout<integer_t>.size)
             )
