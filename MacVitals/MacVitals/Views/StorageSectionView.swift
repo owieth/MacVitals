@@ -16,7 +16,7 @@ struct StorageSectionView: View {
                 }
 
                 ProgressView(value: min(max(storage.usagePercentage / 100, 0), 1))
-                    .tint(storage.usagePercentage > 90 ? .red : .accentColor)
+                    .tint(.forUsage(storage.usagePercentage))
 
                 HStack(spacing: 16) {
                     StatLabel(title: "Read", value: Formatters.bytesPerSecond(storage.readBytesPerSec))

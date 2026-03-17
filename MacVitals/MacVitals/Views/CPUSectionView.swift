@@ -43,9 +43,7 @@ struct CPUSectionView: View {
     }
 
     private func coreColor(_ usage: Double) -> Color {
-        if usage > 90 { return .red }
-        if usage > 70 { return .orange }
-        return .accentColor
+        .forUsage(usage)
     }
 }
 
