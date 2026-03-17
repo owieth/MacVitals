@@ -57,7 +57,7 @@ struct MenuBarView: View {
 
             Spacer()
 
-            Button(action: { openGitHub() }) {
+            Button(action: { Constants.openGitHub() }) {
                 Image(systemName: "arrow.up.right.square")
                     .font(.system(size: 14))
                     .foregroundStyle(.secondary)
@@ -68,9 +68,4 @@ struct MenuBarView: View {
         .padding(.vertical, 12)
     }
 
-    private func openGitHub() {
-        if let url = URL(string: Constants.githubURL) {
-            NSWorkspace.shared.open(url)
-        }
-    }
 }
