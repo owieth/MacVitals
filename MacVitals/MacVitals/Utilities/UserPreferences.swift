@@ -97,6 +97,14 @@ class UserPreferences: ObservableObject {
     }
 
     private init() {
+        UserDefaults.standard.register(defaults: [
+            "showCPUSection": true,
+            "showMemorySection": true,
+            "showStorageSection": true,
+            "showBatterySection": true,
+            "showThermalSection": true,
+        ])
+
         self.launchAtLogin = UserDefaults.standard.bool(forKey: "launchAtLogin")
 
         let savedRate = UserDefaults.standard.double(forKey: "refreshRate")
@@ -108,11 +116,11 @@ class UserPreferences: ObservableObject {
         let savedUnit = UserDefaults.standard.string(forKey: "temperatureUnit") ?? TemperatureUnit.celsius.rawValue
         self.temperatureUnit = TemperatureUnit(rawValue: savedUnit) ?? .celsius
 
-        self.showCPUSection = UserDefaults.standard.object(forKey: "showCPUSection") as? Bool ?? true
-        self.showMemorySection = UserDefaults.standard.object(forKey: "showMemorySection") as? Bool ?? true
-        self.showStorageSection = UserDefaults.standard.object(forKey: "showStorageSection") as? Bool ?? true
-        self.showBatterySection = UserDefaults.standard.object(forKey: "showBatterySection") as? Bool ?? true
-        self.showThermalSection = UserDefaults.standard.object(forKey: "showThermalSection") as? Bool ?? true
+        self.showCPUSection = UserDefaults.standard.bool(forKey: "showCPUSection")
+        self.showMemorySection = UserDefaults.standard.bool(forKey: "showMemorySection")
+        self.showStorageSection = UserDefaults.standard.bool(forKey: "showStorageSection")
+        self.showBatterySection = UserDefaults.standard.bool(forKey: "showBatterySection")
+        self.showThermalSection = UserDefaults.standard.bool(forKey: "showThermalSection")
     }
 
     private func updateLaunchAtLogin() {
