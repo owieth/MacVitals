@@ -5,21 +5,13 @@ struct ThermalCollector {
     private let gpuTempKeys = ["TG0P", "Tg05", "Tg0P"]
 
     func collect(using smc: SMCClient) -> ThermalInfo {
-        var cpuTemp: Double?
-        for key in cpuTempKeys {
-            if let temp = smc.readTemperature(key: key), temp > 0, temp < 150 {
-                cpuTemp = temp
-                break
-            }
-        }
+        let cpuTemp = cpuTempKeys.lazy
+            .compactMap { smc.readTemperature(key: $0) }
+            .first { $0 > 0 && $0 < 150 }
 
-        var gpuTemp: Double?
-        for key in gpuTempKeys {
-            if let temp = smc.readTemperature(key: key), temp > 0, temp < 150 {
-                gpuTemp = temp
-                break
-            }
-        }
+        let gpuTemp = gpuTempKeys.lazy
+            .compactMap { smc.readTemperature(key: $0) }
+            .first { $0 > 0 && $0 < 150 }
 
         let fanCount = smc.readFanCount()
         var fans: [FanInfo] = []
