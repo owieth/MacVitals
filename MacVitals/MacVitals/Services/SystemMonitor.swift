@@ -18,6 +18,7 @@ class SystemMonitor: ObservableObject {
     private init() {}
 
     func start() {
+        stop()
         _ = smcClient.open()
 
         let interval = UserPreferences.shared.refreshRate.rawValue
