@@ -26,6 +26,10 @@ struct MemoryCollector {
         let used = active + wired + compressed
         let available = free + inactive
 
+        // Heuristic based on used/total ratio. macOS DISPATCH_SOURCE_TYPE_MEMORYPRESSURE
+        // provides real OS-level pressure events but requires a long-lived dispatch source,
+        // which doesn't fit the polling collector model. This ratio approximation is
+        // sufficient for UI indication purposes.
         let usageRatio = Double(used) / Double(total)
         let pressure: MemoryPressure
         if usageRatio > 0.9 { pressure = .critical }
