@@ -13,7 +13,9 @@ struct CPUSectionView: View {
                 }
 
                 if !cpu.coreUsages.isEmpty {
-                    VStack(spacing: 2) {
+                    let columns = cpu.coreUsages.count > 8 ? 2 : 1
+                    let gridColumns = Array(repeating: GridItem(.flexible(), spacing: 8), count: columns)
+                    LazyVGrid(columns: gridColumns, spacing: 2) {
                         ForEach(Array(cpu.coreUsages.enumerated()), id: \.offset) { index, usage in
                             HStack(spacing: 4) {
                                 Text("\(index)")
@@ -22,6 +24,8 @@ struct CPUSectionView: View {
                                     .frame(width: 20, alignment: .trailing)
                                 ProgressView(value: min(max(usage / 100, 0), 1))
                                     .tint(coreColor(usage))
+                                    .accessibilityLabel("Core \(index)")
+                                    .accessibilityValue(Formatters.percentage(usage))
                                 Text(Formatters.percentage(usage))
                                     .font(.system(size: 9).monospacedDigit())
                                     .foregroundStyle(.secondary)

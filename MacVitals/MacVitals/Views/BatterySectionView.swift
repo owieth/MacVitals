@@ -9,6 +9,8 @@ struct BatterySectionView: View {
                 HStack {
                     Text(Formatters.percentage(battery.level))
                         .font(.caption.monospacedDigit())
+                        .accessibilityLabel("Battery level")
+                        .accessibilityValue(Formatters.percentage(battery.level))
                     if battery.isCharging {
                         Image(systemName: "bolt.fill")
                             .font(.caption)
