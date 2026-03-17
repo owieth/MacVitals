@@ -56,8 +56,9 @@ class SystemMonitor: ObservableObject {
         let topByCPU: [ProcessSnapshot]
         let topByMemory: [ProcessSnapshot]
         if shouldCollectProcesses {
-            topByCPU = processCollector.collectTopByCPU()
-            topByMemory = processCollector.collectTopByMemory()
+            let topProcesses = processCollector.collectTop()
+            topByCPU = topProcesses.cpu
+            topByMemory = topProcesses.memory
         } else {
             topByCPU = snapshot?.cpu.topProcesses ?? []
             topByMemory = snapshot?.memory.topProcesses ?? []

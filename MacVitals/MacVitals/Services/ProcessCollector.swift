@@ -4,14 +4,11 @@ import Darwin
 struct ProcessCollector {
     private var previousSamples: [Int32: (totalTime: UInt64, timestamp: TimeInterval)] = [:]
 
-    mutating func collectTopByCPU(limit: Int = 5) -> [ProcessSnapshot] {
+    mutating func collectTop(cpuLimit: Int = 5, memoryLimit: Int = 5) -> (cpu: [ProcessSnapshot], memory: [ProcessSnapshot]) {
         let processes = gatherProcesses()
-        return Array(processes.sorted { $0.cpuUsage > $1.cpuUsage }.prefix(limit))
-    }
-
-    mutating func collectTopByMemory(limit: Int = 5) -> [ProcessSnapshot] {
-        let processes = gatherProcesses()
-        return Array(processes.sorted { $0.memoryBytes > $1.memoryBytes }.prefix(limit))
+        let topCPU = Array(processes.sorted { $0.cpuUsage > $1.cpuUsage }.prefix(cpuLimit))
+        let topMemory = Array(processes.sorted { $0.memoryBytes > $1.memoryBytes }.prefix(memoryLimit))
+        return (topCPU, topMemory)
     }
 
     private mutating func gatherProcesses() -> [ProcessSnapshot] {
