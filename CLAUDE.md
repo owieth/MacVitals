@@ -21,13 +21,13 @@ macOS menu bar app for monitoring system vitals (CPU, Memory, Storage, Battery, 
 ## Project Structure
 
 ```
-MacVitals/MacVitals/          # Source root
+MacVitals/                    # Source root
   Models/                     # Data models (CPUInfo, MemoryInfo, etc.)
   Services/                   # System data collectors + orchestrator
   ViewModels/                 # @Observable view models
   Views/                      # SwiftUI views (popover, sections, settings)
   Utilities/                  # Preferences, formatters, constants
-MacVitals/MacVitalsTests/     # Unit tests
+MacVitalsTests/               # Unit tests
 ```
 
 ## Conventions
@@ -40,11 +40,11 @@ MacVitals/MacVitalsTests/     # Unit tests
 ## Build
 
 ```sh
-xcodebuild -project MacVitals/MacVitals.xcodeproj -scheme MacVitals -configuration Debug build
+xcodebuild -project MacVitals.xcodeproj -scheme MacVitals -configuration Debug build
 ```
 
 ## Test
 
 ```sh
-xcodebuild -project MacVitals/MacVitals.xcodeproj -scheme MacVitals -configuration Debug test
+xcodebuild -project MacVitals.xcodeproj -scheme MacVitals -configuration Debug test
 ```
