@@ -2,6 +2,8 @@ import SwiftUI
 
 struct OverviewSection: View {
     let snapshot: SystemSnapshot?
+    var cpuHistory: [Double] = []
+    var memoryHistory: [Double] = []
 
     var body: some View {
         VStack(spacing: 8) {
@@ -22,6 +24,25 @@ struct OverviewSection: View {
                         value: snapshot.memory.usagePercentage / 100,
                         displayValue: Formatters.percentage(snapshot.memory.usagePercentage)
                     )
+                }
+
+                if !cpuHistory.isEmpty || !memoryHistory.isEmpty {
+                    HStack(spacing: 16) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("CPU")
+                                .font(.system(size: 9))
+                                .foregroundStyle(.tertiary)
+                            SparklineView(data: cpuHistory, color: .blue)
+                                .frame(height: 24)
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Memory")
+                                .font(.system(size: 9))
+                                .foregroundStyle(.tertiary)
+                            SparklineView(data: memoryHistory, color: .green)
+                                .frame(height: 24)
+                        }
+                    }
                 }
             } else {
                 Text("Loading...")

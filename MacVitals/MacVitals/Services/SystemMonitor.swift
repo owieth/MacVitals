@@ -6,6 +6,9 @@ class SystemMonitor: ObservableObject {
 
     @Published var snapshot: SystemSnapshot?
     var isPopoverVisible = false
+    @Published var cpuHistory: [Double] = []
+    @Published var memoryHistory: [Double] = []
+    private let maxHistorySize = 60
 
     private var timer: Timer?
     private var tickCount = 0
@@ -62,6 +65,11 @@ class SystemMonitor: ObservableObject {
             topByCPU = snapshot?.cpu.topProcesses ?? []
             topByMemory = snapshot?.memory.topProcesses ?? []
         }
+
+        cpuHistory.append(cpu.totalUsage)
+        if cpuHistory.count > maxHistorySize { cpuHistory.removeFirst() }
+        memoryHistory.append(memory.usagePercentage)
+        if memoryHistory.count > maxHistorySize { memoryHistory.removeFirst() }
 
         snapshot = SystemSnapshot(
             timestamp: Date(),
