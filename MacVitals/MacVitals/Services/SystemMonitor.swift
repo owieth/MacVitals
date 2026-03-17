@@ -12,7 +12,7 @@ class SystemMonitor: ObservableObject {
     private var storageCollector = StorageCollector()
     private let batteryCollector = BatteryCollector()
     private let thermalCollector = ThermalCollector()
-    private let processCollector = ProcessCollector()
+    private var processCollector = ProcessCollector()
     private let smcClient = SMCClient()
 
     private init() {}
