@@ -28,6 +28,10 @@ struct MenuBarView: View {
                         BatterySectionView(battery: battery)
                     }
 
+                    if preferences.showNetworkSection {
+                        NetworkSectionView(network: viewModel.snapshot?.network ?? .empty)
+                    }
+
                     if preferences.showThermalSection {
                         ThermalSectionView(thermal: viewModel.snapshot?.thermal ?? .empty)
                     }

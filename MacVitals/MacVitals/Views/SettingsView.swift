@@ -60,6 +60,7 @@ struct DisplaySettingsView: View {
                 Toggle("Memory", isOn: $preferences.showMemorySection)
                 Toggle("Storage", isOn: $preferences.showStorageSection)
                 Toggle("Battery", isOn: $preferences.showBatterySection)
+                Toggle("Network", isOn: $preferences.showNetworkSection)
                 Toggle("Thermals", isOn: $preferences.showThermalSection)
             }
         }
