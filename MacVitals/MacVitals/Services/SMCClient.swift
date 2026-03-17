@@ -1,8 +1,6 @@
 import Foundation
 import IOKit
 
-private let ioMainPort = kIOMainPortDefault
-
 struct SMCKeyData {
     struct Version {
         var major: UInt8 = 0
@@ -49,7 +47,7 @@ class SMCClient {
     func open() -> Bool {
         if isOpen { close() }
         let service = IOServiceGetMatchingService(
-            ioMainPort, IOServiceMatching("AppleSMC")
+            kIOMainPortDefault, IOServiceMatching("AppleSMC")
         )
         guard service != 0 else { return false }
         let result = IOServiceOpen(service, mv_mach_task_self(), 0, &connection)
