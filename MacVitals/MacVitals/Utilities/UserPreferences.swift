@@ -35,6 +35,8 @@ enum MenuBarDisplayMode: String, CaseIterable, Identifiable {
     case iconOnly = "iconOnly"
     case iconAndCPU = "iconAndCPU"
     case iconAndTemp = "iconAndTemp"
+    case cpuGraph = "cpuGraph"
+    case memoryRing = "memoryRing"
 
     var id: String { rawValue }
 
@@ -43,6 +45,8 @@ enum MenuBarDisplayMode: String, CaseIterable, Identifiable {
         case .iconOnly: return "Icon only"
         case .iconAndCPU: return "Icon + CPU %"
         case .iconAndTemp: return "Icon + Temperature"
+        case .cpuGraph: return "CPU bar graph"
+        case .memoryRing: return "Memory ring"
         }
     }
 }
