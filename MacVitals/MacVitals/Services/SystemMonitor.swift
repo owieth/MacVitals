@@ -16,6 +16,7 @@ class SystemMonitor: ObservableObject {
     private var storageCollector = StorageCollector()
     private let batteryCollector = BatteryCollector()
     private let thermalCollector = ThermalCollector()
+    private var networkCollector = NetworkCollector()
     private var processCollector = ProcessCollector()
     private let smcClient = SMCClient()
 
@@ -53,6 +54,7 @@ class SystemMonitor: ObservableObject {
         let storage = storageCollector.collect()
         let battery = batteryCollector.collect()
         let thermal = thermalCollector.collect(using: smcClient)
+        let network = networkCollector.collect()
         let uptime = ProcessInfo.processInfo.systemUptime
 
         tickCount += 1
@@ -75,6 +77,7 @@ class SystemMonitor: ObservableObject {
             storage: storage,
             battery: battery,
             thermal: thermal,
+            network: network,
             uptime: uptime
         )
     }

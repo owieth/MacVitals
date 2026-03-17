@@ -100,6 +100,10 @@ class UserPreferences: ObservableObject {
         didSet { UserDefaults.standard.set(showThermalSection, forKey: "showThermalSection") }
     }
 
+    @Published var showNetworkSection: Bool {
+        didSet { UserDefaults.standard.set(showNetworkSection, forKey: "showNetworkSection") }
+    }
+
     private init() {
         UserDefaults.standard.register(defaults: [
             "showCPUSection": true,
@@ -107,6 +111,7 @@ class UserPreferences: ObservableObject {
             "showStorageSection": true,
             "showBatterySection": true,
             "showThermalSection": true,
+            "showNetworkSection": true,
         ])
 
         self.launchAtLogin = UserDefaults.standard.bool(forKey: "launchAtLogin")
@@ -125,6 +130,7 @@ class UserPreferences: ObservableObject {
         self.showStorageSection = UserDefaults.standard.bool(forKey: "showStorageSection")
         self.showBatterySection = UserDefaults.standard.bool(forKey: "showBatterySection")
         self.showThermalSection = UserDefaults.standard.bool(forKey: "showThermalSection")
+        self.showNetworkSection = UserDefaults.standard.bool(forKey: "showNetworkSection")
     }
 
     private func updateLaunchAtLogin() {

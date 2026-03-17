@@ -7,5 +7,6 @@ struct SystemSnapshot {
     let storage: StorageInfo
     let battery: BatteryInfo?
     let thermal: ThermalInfo
+    let network: NetworkInfo
     let uptime: TimeInterval
 }
