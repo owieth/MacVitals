@@ -47,6 +47,7 @@ class SMCClient {
     private var isOpen = false
 
     func open() -> Bool {
+        if isOpen { close() }
         let service = IOServiceGetMatchingService(
             ioMainPort, IOServiceMatching("AppleSMC")
         )
