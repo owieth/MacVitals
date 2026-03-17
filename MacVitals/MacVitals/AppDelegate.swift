@@ -1,6 +1,7 @@
 import SwiftUI
 import AppKit
 import Combine
+import Carbon.HIToolbox
 
 @MainActor
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -34,6 +35,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.setActivationPolicy(.accessory)
 
         SystemMonitor.shared.start()
+
+        NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            if event.modifierFlags.contains([.option, .shift]) && event.keyCode == 9 {
+                Task { @MainActor in
+                    self?.togglePopover()
+                }
+            }
+        }
+        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            if event.modifierFlags.contains([.option, .shift]) && event.keyCode == 9 {
+                Task { @MainActor in
+                    self?.togglePopover()
+                }
+                return nil
+            }
+            return event
+        }
 
         cancellable = SystemMonitor.shared.$snapshot.map { _ in () }
             .merge(with: UserPreferences.shared.$menuBarDisplayMode.map { _ in () })

@@ -90,6 +90,18 @@ struct AboutSettingsView: View {
                 Constants.openGitHub()
             }
 
+            Button("Check for Updates") {
+                if let url = URL(string: Constants.githubURL + "/releases/latest") {
+                    NSWorkspace.shared.open(url)
+                }
+            }
+            .buttonStyle(.link)
+            .font(.caption)
+
+            Text("Tip: Press ⌥⇧V to toggle the popover")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+
             Spacer()
         }
         .frame(maxWidth: .infinity)
