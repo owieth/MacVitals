@@ -2,27 +2,33 @@ import Foundation
 import Darwin
 
 struct ProcessCollector {
-    func collectTopByCPU(limit: Int = 5) -> [ProcessSnapshot] {
+    private var previousSamples: [Int32: (totalTime: UInt64, timestamp: TimeInterval)] = [:]
+
+    mutating func collectTopByCPU(limit: Int = 5) -> [ProcessSnapshot] {
         let processes = gatherProcesses()
         return Array(processes.sorted { $0.cpuUsage > $1.cpuUsage }.prefix(limit))
     }
 
-    func collectTopByMemory(limit: Int = 5) -> [ProcessSnapshot] {
+    mutating func collectTopByMemory(limit: Int = 5) -> [ProcessSnapshot] {
         let processes = gatherProcesses()
         return Array(processes.sorted { $0.memoryBytes > $1.memoryBytes }.prefix(limit))
     }
 
-    private func gatherProcesses() -> [ProcessSnapshot] {
+    private mutating func gatherProcesses() -> [ProcessSnapshot] {
         let pids = allPids()
         var processes: [ProcessSnapshot] = []
+        let now = ProcessInfo.processInfo.systemUptime
+        let coreCount = Double(ProcessInfo.processInfo.activeProcessorCount)
+        var newSamples: [Int32: (totalTime: UInt64, timestamp: TimeInterval)] = [:]
 
         for pid in pids {
-            guard let info = processInfo(pid: pid) else { continue }
+            guard let info = processInfo(pid: pid, now: now, coreCount: coreCount, newSamples: &newSamples) else { continue }
             if info.memoryBytes > 0 {
                 processes.append(info)
             }
         }
 
+        previousSamples = newSamples
         return processes
     }
 
@@ -34,7 +40,12 @@ struct ProcessCollector {
         return pids.filter { $0 > 0 }
     }
 
-    private func processInfo(pid: Int32) -> ProcessSnapshot? {
+    private func processInfo(
+        pid: Int32,
+        now: TimeInterval,
+        coreCount: Double,
+        newSamples: inout [Int32: (totalTime: UInt64, timestamp: TimeInterval)]
+    ) -> ProcessSnapshot? {
         var taskInfo = proc_taskinfo()
         let size = Int32(MemoryLayout<proc_taskinfo>.size)
         let result = proc_pidinfo(pid, PROC_PIDTASKINFO, 0, &taskInfo, size)
@@ -46,10 +57,19 @@ struct ProcessCollector {
         let name = URL(fileURLWithPath: path).lastPathComponent
         guard !name.isEmpty else { return nil }
 
-        let totalTime = Double(taskInfo.pti_total_user + taskInfo.pti_total_system)
-        let cpuUsage = totalTime / 1_000_000_000
-        let memoryBytes = UInt64(taskInfo.pti_resident_size)
+        let totalTime = taskInfo.pti_total_user + taskInfo.pti_total_system
+        newSamples[pid] = (totalTime: totalTime, timestamp: now)
 
+        var cpuUsage = 0.0
+        if let previous = previousSamples[pid] {
+            let deltaTime = now - previous.timestamp
+            if deltaTime > 0 && totalTime >= previous.totalTime {
+                let deltaCPU = Double(totalTime - previous.totalTime) / 1_000_000_000
+                cpuUsage = (deltaCPU / deltaTime / coreCount) * 100
+            }
+        }
+
+        let memoryBytes = UInt64(taskInfo.pti_resident_size)
         return ProcessSnapshot(pid: pid, name: name, cpuUsage: cpuUsage, memoryBytes: memoryBytes)
     }
 }
