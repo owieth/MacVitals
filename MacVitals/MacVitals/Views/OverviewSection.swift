@@ -49,6 +49,8 @@ struct MetricBar: View {
             }
             ProgressView(value: min(max(value, 0), 1))
                 .tint(colorForValue(value))
+                .accessibilityLabel("\(label) usage")
+                .accessibilityValue(displayValue)
         }
     }
 

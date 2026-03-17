@@ -35,13 +35,20 @@ struct PressureBadge: View {
     let pressure: MemoryPressure
 
     var body: some View {
-        Text(pressure.rawValue)
-            .font(.caption2)
-            .padding(.horizontal, 6)
-            .padding(.vertical, 2)
-            .background(backgroundColor.opacity(0.15))
-            .foregroundStyle(backgroundColor)
-            .clipShape(Capsule())
+        HStack(spacing: 4) {
+            Circle()
+                .fill(backgroundColor)
+                .frame(width: 6, height: 6)
+            Text(pressure.rawValue)
+                .font(.caption2)
+        }
+        .padding(.horizontal, 6)
+        .padding(.vertical, 2)
+        .background(backgroundColor.opacity(0.15))
+        .foregroundStyle(backgroundColor)
+        .clipShape(Capsule())
+        .accessibilityLabel("Memory pressure")
+        .accessibilityValue(pressure.rawValue)
     }
 
     private var backgroundColor: Color {
