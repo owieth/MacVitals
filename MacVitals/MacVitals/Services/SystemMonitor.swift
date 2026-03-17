@@ -80,7 +80,7 @@ class SystemMonitor: ObservableObject {
         memoryHistory.append(memory.usagePercentage)
         if memoryHistory.count > maxHistorySize { memoryHistory.removeFirst() }
 
-        snapshot = SystemSnapshot(
+        let newSnapshot = SystemSnapshot(
             timestamp: Date(),
             cpu: cpu.with(topProcesses: topByCPU),
             memory: memory.with(topProcesses: topByMemory),
@@ -91,5 +91,9 @@ class SystemMonitor: ObservableObject {
             gpu: gpu,
             uptime: uptime
         )
+        snapshot = newSnapshot
+        if timer != nil {
+            AlertManager.shared.evaluate(snapshot: newSnapshot)
+        }
     }
 }
