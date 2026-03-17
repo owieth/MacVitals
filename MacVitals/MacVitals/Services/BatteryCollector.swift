@@ -1,7 +1,9 @@
 import Foundation
 import IOKit.ps
+import os.log
 
 struct BatteryCollector {
+    private static let logger = Logger(subsystem: "com.macvitals.app", category: "BatteryCollector")
     func collect() -> BatteryInfo? {
         guard let snapshot = IOPSCopyPowerSourcesInfo()?.takeRetainedValue(),
               let sources = IOPSCopyPowerSourcesList(snapshot)?.takeRetainedValue() as? [Any],
@@ -9,7 +11,10 @@ struct BatteryCollector {
               let info = IOPSGetPowerSourceDescription(
                   snapshot, firstSource as CFTypeRef
               )?.takeUnretainedValue() as? [String: Any]
-        else { return nil }
+        else {
+            Self.logger.debug("No battery power source found")
+            return nil
+        }
 
         let currentCapacity = info[kIOPSCurrentCapacityKey] as? Int ?? 0
         let maxCapacity = info[kIOPSMaxCapacityKey] as? Int ?? 100

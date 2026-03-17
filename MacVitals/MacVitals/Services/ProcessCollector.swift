@@ -1,7 +1,9 @@
 import Foundation
 import Darwin
+import os.log
 
 struct ProcessCollector {
+    private static let logger = Logger(subsystem: "com.macvitals.app", category: "ProcessCollector")
     private var previousSamples: [Int32: (totalTime: UInt64, timestamp: TimeInterval)] = [:]
 
     mutating func collectTopByCPU(limit: Int = 5) -> [ProcessSnapshot] {
