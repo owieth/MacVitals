@@ -42,10 +42,8 @@ struct ProcessCollector {
 
         var nameBuffer = [CChar](repeating: 0, count: Int(MAXPATHLEN))
         proc_pidpath(pid, &nameBuffer, UInt32(MAXPATHLEN))
-        let path = nameBuffer.withUnsafeBufferPointer { buf in
-            String(decoding: buf.prefix(while: { $0 != 0 }).map { UInt8(bitPattern: $0) }, as: UTF8.self)
-        }
-        let name = (path as NSString).lastPathComponent
+        let path = String(cString: nameBuffer)
+        let name = URL(fileURLWithPath: path).lastPathComponent
         guard !name.isEmpty else { return nil }
 
         let totalTime = Double(taskInfo.pti_total_user + taskInfo.pti_total_system)
