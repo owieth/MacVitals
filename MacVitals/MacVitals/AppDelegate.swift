@@ -7,9 +7,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
     private var popover: NSPopover?
     private var isQuittingFromMenu = false
-    private var snapshotCancellable: AnyCancellable?
-    private var displayModeCancellable: AnyCancellable?
-    private var tempUnitCancellable: AnyCancellable?
+    private var cancellable: AnyCancellable?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -37,23 +35,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         SystemMonitor.shared.start()
 
-        snapshotCancellable = SystemMonitor.shared.$snapshot
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                self?.updateMenuBarDisplay()
-            }
-
-        displayModeCancellable = UserPreferences.shared.$menuBarDisplayMode
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                self?.updateMenuBarDisplay()
-            }
-
-        tempUnitCancellable = UserPreferences.shared.$temperatureUnit
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                self?.updateMenuBarDisplay()
-            }
+        cancellable = SystemMonitor.shared.$snapshot.map { _ in () }
+            .merge(with: UserPreferences.shared.$menuBarDisplayMode.map { _ in () })
+            .merge(with: UserPreferences.shared.$temperatureUnit.map { _ in () })
+            .sink { [weak self] _ in self?.updateMenuBarDisplay() }
     }
 
     @objc private func statusItemClicked() {
