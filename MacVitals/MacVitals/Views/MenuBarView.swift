@@ -10,7 +10,11 @@ struct MenuBarView: View {
             Divider()
             ScrollView {
                 VStack(spacing: 12) {
-                    OverviewSection(snapshot: viewModel.snapshot)
+                    OverviewSection(
+                        snapshot: viewModel.snapshot,
+                        cpuHistory: SystemMonitor.shared.cpuHistory,
+                        memoryHistory: SystemMonitor.shared.memoryHistory
+                    )
 
                     if preferences.showCPUSection {
                         CPUSectionView(cpu: viewModel.snapshot?.cpu ?? .empty)
