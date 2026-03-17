@@ -7,11 +7,9 @@ struct SettingsView: View {
         TabView {
             GeneralSettingsView()
                 .tabItem { Label("General", systemImage: "gear") }
-                .environmentObject(preferences)
 
             DisplaySettingsView()
                 .tabItem { Label("Display", systemImage: "eye") }
-                .environmentObject(preferences)
 
             AboutSettingsView()
                 .tabItem { Label("About", systemImage: "info.circle") }
