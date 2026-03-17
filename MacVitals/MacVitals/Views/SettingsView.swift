@@ -89,9 +89,7 @@ struct AboutSettingsView: View {
             }
 
             Button("View on GitHub") {
-                if let url = URL(string: Constants.githubURL) {
-                    NSWorkspace.shared.open(url)
-                }
+                Constants.openGitHub()
             }
 
             Spacer()
