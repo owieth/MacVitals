@@ -33,7 +33,7 @@ struct ThermalSectionView: View {
                     }
                 }
 
-                if thermal.cpuTemperature == nil && thermal.gpuTemperature == nil && thermal.fans.isEmpty {
+                if thermal.isEmpty {
                     Text("No thermal data available")
                         .font(.caption)
                         .foregroundStyle(.secondary)

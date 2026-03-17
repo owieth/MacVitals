@@ -12,6 +12,10 @@ struct ThermalInfo {
     let gpuTemperature: Double?
     let fans: [FanInfo]
 
+    var isEmpty: Bool {
+        cpuTemperature == nil && gpuTemperature == nil && fans.isEmpty
+    }
+
     static let empty = ThermalInfo(
         cpuTemperature: nil,
         gpuTemperature: nil,
