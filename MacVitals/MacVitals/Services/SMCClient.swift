@@ -70,22 +70,19 @@ class SMCClient {
     }
 
     func readFanSpeed(index: Int) -> Int? {
-        let key = "F\(index)Ac"
-        guard let bytes = readKey(key: key, dataSize: 2) else { return nil }
-        let value = (UInt(bytes[0]) << 8) | UInt(bytes[1])
-        return Int(value >> 2)
+        readFPE2(index: index, suffix: "Ac")
     }
 
     func readFanMin(index: Int) -> Int? {
-        let key = "F\(index)Mn"
-        guard let bytes = readKey(key: key, dataSize: 2) else { return nil }
-        let value = (UInt(bytes[0]) << 8) | UInt(bytes[1])
-        return Int(value >> 2)
+        readFPE2(index: index, suffix: "Mn")
     }
 
     func readFanMax(index: Int) -> Int? {
-        let key = "F\(index)Mx"
-        guard let bytes = readKey(key: key, dataSize: 2) else { return nil }
+        readFPE2(index: index, suffix: "Mx")
+    }
+
+    private func readFPE2(index: Int, suffix: String) -> Int? {
+        guard let bytes = readKey(key: "F\(index)\(suffix)", dataSize: 2) else { return nil }
         let value = (UInt(bytes[0]) << 8) | UInt(bytes[1])
         return Int(value >> 2)
     }
@@ -102,7 +99,8 @@ class SMCClient {
         var outputStruct = SMCKeyData()
 
         inputStruct.key = stringToUInt32(key)
-        inputStruct.data8 = 5 // kSMCReadKey
+        let kSMCReadKey: UInt8 = 5
+        inputStruct.data8 = kSMCReadKey
         inputStruct.keyInfo.dataSize = dataSize
 
         let inputSize = MemoryLayout<SMCKeyData>.size
@@ -111,6 +109,7 @@ class SMCClient {
         let result = IOConnectCallStructMethod(
             connection,
             2, // kSMCHandleYPCEvent
+            // selector for SMC read/write operations
             &inputStruct,
             inputSize,
             &outputStruct,
