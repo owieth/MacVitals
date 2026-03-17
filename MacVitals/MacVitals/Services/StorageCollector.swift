@@ -1,8 +1,6 @@
 import Foundation
 import IOKit
 
-private let storageIOMainPort = kIOMainPortDefault
-
 struct StorageCollector {
     private var previousReadBytes: UInt64 = 0
     private var previousWriteBytes: UInt64 = 0
@@ -21,7 +19,7 @@ struct StorageCollector {
 
         let matching = IOServiceMatching("IOBlockStorageDriver")
         var iterator: io_iterator_t = 0
-        if IOServiceGetMatchingServices(storageIOMainPort, matching, &iterator) == KERN_SUCCESS {
+        if IOServiceGetMatchingServices(kIOMainPortDefault, matching, &iterator) == KERN_SUCCESS {
             var service = IOIteratorNext(iterator)
             while service != 0 {
                 if let props = serviceProperties(service) {

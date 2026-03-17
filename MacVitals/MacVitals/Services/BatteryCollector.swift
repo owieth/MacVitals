@@ -1,8 +1,6 @@
 import Foundation
 import IOKit.ps
 
-private let batteryIOMainPort = kIOMainPortDefault
-
 struct BatteryCollector {
     func collect() -> BatteryInfo? {
         guard let snapshot = IOPSCopyPowerSourcesInfo()?.takeRetainedValue(),
@@ -30,7 +28,7 @@ struct BatteryCollector {
         var temperature: Double?
 
         let matchingDict = IOServiceMatching("AppleSmartBattery")
-        let service = IOServiceGetMatchingService(batteryIOMainPort, matchingDict)
+        let service = IOServiceGetMatchingService(kIOMainPortDefault, matchingDict)
         if service != 0 {
             var props: Unmanaged<CFMutableDictionary>?
             if IORegistryEntryCreateCFProperties(
