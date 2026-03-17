@@ -1,5 +1,6 @@
 import Foundation
 import IOKit
+import os.log
 
 struct SMCKeyData {
     struct Version {
@@ -41,6 +42,7 @@ struct SMCKeyData {
 }
 
 class SMCClient {
+    private static let logger = Logger(subsystem: "com.macvitals.app", category: "SMCClient")
     private var connection: io_connect_t = 0
     private var isOpen = false
 
@@ -49,10 +51,16 @@ class SMCClient {
         let service = IOServiceGetMatchingService(
             kIOMainPortDefault, IOServiceMatching("AppleSMC")
         )
-        guard service != 0 else { return false }
+        guard service != 0 else {
+            Self.logger.error("Failed to find AppleSMC service")
+            return false
+        }
         let result = IOServiceOpen(service, mv_mach_task_self(), 0, &connection)
         IOObjectRelease(service)
         isOpen = result == KERN_SUCCESS
+        if !isOpen {
+            Self.logger.error("IOServiceOpen failed with result: \(result)")
+        }
         return isOpen
     }
 

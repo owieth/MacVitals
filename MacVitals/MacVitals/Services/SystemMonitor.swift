@@ -1,8 +1,10 @@
+import os.log
 import Foundation
 
 @MainActor
 class SystemMonitor: ObservableObject {
     static let shared = SystemMonitor()
+    private let logger = Logger(subsystem: "com.macvitals.app", category: "SystemMonitor")
 
     @Published var snapshot: SystemSnapshot?
     var isPopoverVisible = false
@@ -20,6 +22,7 @@ class SystemMonitor: ObservableObject {
     private init() {}
 
     func start() {
+        logger.info("Starting system monitor")
         stop()
         _ = smcClient.open()
 
@@ -33,6 +36,7 @@ class SystemMonitor: ObservableObject {
     }
 
     func stop() {
+        logger.info("Stopping system monitor")
         timer?.invalidate()
         timer = nil
         smcClient.close()
