@@ -5,8 +5,10 @@ class SystemMonitor: ObservableObject {
     static let shared = SystemMonitor()
 
     @Published var snapshot: SystemSnapshot?
+    var isPopoverVisible = false
 
     private var timer: Timer?
+    private var tickCount = 0
     private var cpuCollector = CPUCollector()
     private let memoryCollector = MemoryCollector()
     private var storageCollector = StorageCollector()
@@ -48,8 +50,17 @@ class SystemMonitor: ObservableObject {
         let thermal = thermalCollector.collect(using: smcClient)
         let uptime = ProcessInfo.processInfo.systemUptime
 
-        let topByCPU = processCollector.collectTopByCPU()
-        let topByMemory = processCollector.collectTopByMemory()
+        tickCount += 1
+        let shouldCollectProcesses = isPopoverVisible || tickCount % 3 == 0
+        let topByCPU: [ProcessSnapshot]
+        let topByMemory: [ProcessSnapshot]
+        if shouldCollectProcesses {
+            topByCPU = processCollector.collectTopByCPU()
+            topByMemory = processCollector.collectTopByMemory()
+        } else {
+            topByCPU = snapshot?.cpu.topProcesses ?? []
+            topByMemory = snapshot?.memory.topProcesses ?? []
+        }
 
         let cpuWithProcesses = CPUInfo(
             totalUsage: cpu.totalUsage,

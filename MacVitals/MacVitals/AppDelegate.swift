@@ -90,9 +90,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard let popover = popover, let button = statusItem?.button else { return }
         if popover.isShown {
             popover.performClose(nil)
+            SystemMonitor.shared.isPopoverVisible = false
         } else {
             popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
             NSApp.activate(ignoringOtherApps: true)
+            SystemMonitor.shared.isPopoverVisible = true
         }
     }
 

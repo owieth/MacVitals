@@ -1,27 +1,39 @@
 import Foundation
 
 enum Formatters {
+    nonisolated(unsafe) private static let memoryFormatter: ByteCountFormatter = {
+        let f = ByteCountFormatter()
+        f.countStyle = .memory
+        return f
+    }()
+
+    nonisolated(unsafe) private static let fileFormatter: ByteCountFormatter = {
+        let f = ByteCountFormatter()
+        f.countStyle = .file
+        return f
+    }()
+
+    nonisolated(unsafe) private static let bytesPerSecFormatter: ByteCountFormatter = {
+        let f = ByteCountFormatter()
+        f.countStyle = .memory
+        f.includesUnit = true
+        return f
+    }()
+
     static func percentage(_ value: Double) -> String {
         String(format: "%.0f%%", value)
     }
 
     static func bytes(_ value: UInt64) -> String {
-        let formatter = ByteCountFormatter()
-        formatter.countStyle = .memory
-        return formatter.string(fromByteCount: Int64(value))
+        memoryFormatter.string(fromByteCount: Int64(value))
     }
 
     static func bytesDecimal(_ value: UInt64) -> String {
-        let formatter = ByteCountFormatter()
-        formatter.countStyle = .file
-        return formatter.string(fromByteCount: Int64(value))
+        fileFormatter.string(fromByteCount: Int64(value))
     }
 
     static func bytesPerSecond(_ value: UInt64) -> String {
-        let formatter = ByteCountFormatter()
-        formatter.countStyle = .memory
-        formatter.includesUnit = true
-        return formatter.string(fromByteCount: Int64(value)) + "/s"
+        bytesPerSecFormatter.string(fromByteCount: Int64(value)) + "/s"
     }
 
     static func temperature(_ celsius: Double, unit: TemperatureUnit) -> String {
