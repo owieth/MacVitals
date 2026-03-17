@@ -90,10 +90,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         switch mode {
         case .iconOnly:
             button.title = ""
+            button.image = NSImage(
+                systemSymbolName: "gauge.with.dots.needle.bottom.50percent",
+                accessibilityDescription: "MacVitals"
+            )
         case .iconAndCPU:
             if let snapshot = SystemMonitor.shared.snapshot {
                 button.title = " " + Formatters.percentage(snapshot.cpu.totalUsage)
             }
+            button.image = NSImage(
+                systemSymbolName: "gauge.with.dots.needle.bottom.50percent",
+                accessibilityDescription: "MacVitals"
+            )
         case .iconAndTemp:
             if let snapshot = SystemMonitor.shared.snapshot,
                let temp = snapshot.thermal.cpuTemperature {
@@ -101,11 +109,70 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             } else {
                 button.title = " --"
             }
+            button.image = NSImage(
+                systemSymbolName: "gauge.with.dots.needle.bottom.50percent",
+                accessibilityDescription: "MacVitals"
+            )
+        case .cpuGraph:
+            button.title = ""
+            if let snapshot = SystemMonitor.shared.snapshot, !snapshot.cpu.coreUsages.isEmpty {
+                button.image = renderCPUBarGraph(coreUsages: snapshot.cpu.coreUsages)
+            }
+        case .memoryRing:
+            button.title = ""
+            if let snapshot = SystemMonitor.shared.snapshot {
+                button.image = renderMemoryRing(usagePercent: snapshot.memory.usagePercentage)
+            }
         }
 
-        if mode != .iconOnly {
+        if mode == .iconAndCPU || mode == .iconAndTemp {
             button.font = NSFont.monospacedDigitSystemFont(ofSize: NSFont.systemFontSize, weight: .regular)
         }
+    }
+
+    private func renderCPUBarGraph(coreUsages: [Double]) -> NSImage {
+        let width: CGFloat = 24
+        let height: CGFloat = 18
+        let image = NSImage(size: NSSize(width: width, height: height))
+        image.lockFocus()
+        let barCount = min(coreUsages.count, 12)
+        let barWidth = max(width / CGFloat(barCount) - 1, 1)
+        for (i, usage) in coreUsages.prefix(barCount).enumerated() {
+            let x = CGFloat(i) * (barWidth + 1)
+            let barHeight = max(CGFloat(usage / 100) * height, 1)
+            let color: NSColor = usage > 90 ? .systemRed : usage > 70 ? .systemOrange : .systemGreen
+            color.setFill()
+            NSBezierPath(rect: NSRect(x: x, y: 0, width: barWidth, height: barHeight)).fill()
+        }
+        image.unlockFocus()
+        image.isTemplate = false
+        return image
+    }
+
+    private func renderMemoryRing(usagePercent: Double) -> NSImage {
+        let size: CGFloat = 18
+        let image = NSImage(size: NSSize(width: size, height: size))
+        image.lockFocus()
+        let lineWidth: CGFloat = 2.5
+        let center = NSPoint(x: size / 2, y: size / 2)
+        let radius = (size - lineWidth) / 2
+        NSColor.systemGray.withAlphaComponent(0.3).setStroke()
+        let bgPath = NSBezierPath()
+        bgPath.appendArc(withCenter: center, radius: radius, startAngle: 0, endAngle: 360)
+        bgPath.lineWidth = lineWidth
+        bgPath.stroke()
+        let color: NSColor = usagePercent > 90 ? .systemRed : usagePercent > 70 ? .systemOrange : .systemGreen
+        color.setStroke()
+        let fgPath = NSBezierPath()
+        let startAngle: CGFloat = 90
+        let endAngle = startAngle - CGFloat(usagePercent / 100 * 360)
+        fgPath.appendArc(withCenter: center, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: true)
+        fgPath.lineWidth = lineWidth
+        fgPath.lineCapStyle = .round
+        fgPath.stroke()
+        image.unlockFocus()
+        image.isTemplate = false
+        return image
     }
 
     @objc private func openSettings() {
