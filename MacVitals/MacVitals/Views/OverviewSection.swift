@@ -53,8 +53,14 @@ struct MetricBar: View {
     }
 
     private func colorForValue(_ value: Double) -> Color {
-        if value > 0.9 { return .red }
-        if value > 0.7 { return .orange }
+        .forUsage(value * 100)
+    }
+}
+
+extension Color {
+    static func forUsage(_ percentage: Double) -> Color {
+        if percentage > 90 { return .red }
+        if percentage > 70 { return .orange }
         return .accentColor
     }
 }
