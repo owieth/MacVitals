@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MacVitals — macOS System Monitor</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖥</text></svg>">
+  <meta name="description" content="MacVitals is a free, open-source macOS menu bar app for monitoring CPU, memory, storage, battery, thermals, network, and GPU. Lightweight and entirely local.">
+  <link rel="canonical" href="https://owieth.github.io/MacVitals/">
+  <meta name="theme-color" content="#0071e3" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#4da3ff" media="(prefers-color-scheme: dark)">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="MacVitals — macOS System Monitor">
+  <meta property="og:description" content="Free, open-source macOS menu bar app for monitoring CPU, memory, storage, battery, thermals, network, and GPU. Lightweight and entirely local.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://owieth.github.io/MacVitals/">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="MacVitals">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="MacVitals — macOS System Monitor">
+  <meta name="twitter:description" content="Free, open-source macOS menu bar app for monitoring CPU, memory, storage, battery, thermals, network, and GPU. Lightweight and entirely local.">
+
+  <style>
+    :root {
+      --bg: #fafafa;
+      --surface: #fff;
+      --text: #1a1a1a;
+      --text-secondary: #555;
+      --accent: #0071e3;
+      --accent-light: #e8f2ff;
+      --border: #e5e5e5;
+      --code-bg: #f5f5f5;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111;
+        --surface: #1a1a1a;
+        --text: #f0f0f0;
+        --text-secondary: #999;
+        --accent: #4da3ff;
+        --accent-light: #1a2a3f;
+        --border: #2a2a2a;
+        --code-bg: #222;
+      }
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 48px;
+      text-align: center;
+    }
+    .hero-icon {
+      width: 128px;
+      height: 128px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      text-wrap: balance;
+    }
+    .hero p {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin: 0 auto 32px;
+      text-wrap: pretty;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background: var(--accent-light);
+      color: var(--accent);
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .download-btn {
+      display: inline-block;
+      padding: 14px 32px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      margin-top: 24px;
+      transition: opacity 0.15s;
+    }
+    .download-btn:hover { opacity: 0.85; }
+    .install-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+      text-align: center;
+    }
+    @media (max-width: 560px) { .install-steps { grid-template-columns: 1fr; } }
+    .install-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 12px;
+    }
+    .install-step .step-num {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .install-step p { font-size: 14px; margin: 0; }
+
+    /* Sections */
+    section { padding: 48px 0; }
+    section + section { border-top: 1px solid var(--border); }
+    h2 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 24px;
+      text-wrap: balance;
+    }
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 24px 0 8px;
+    }
+    p, li { color: var(--text-secondary); font-size: 16px; }
+    p + p { margin-top: 12px; }
+    ul { padding-left: 20px; margin-top: 8px; }
+    li { margin-bottom: 6px; }
+    li strong { color: var(--text); }
+
+    /* Feature grid */
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    @media (max-width: 560px) { .features { grid-template-columns: 1fr; } }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .feature-card h3 { margin: 0 0 6px; font-size: 16px; }
+    .feature-card p { font-size: 14px; margin: 0; }
+
+    /* Tech table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 15px;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    th { font-weight: 600; color: var(--text); }
+    td { color: var(--text-secondary); }
+
+    /* Privacy section */
+    .privacy-highlight {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 16px;
+    }
+    .privacy-highlight ul { padding-left: 18px; }
+
+    /* Code */
+    code {
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: "SF Mono", Menlo, monospace;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "MacVitals",
+    "description": "A lightweight macOS menu bar app for monitoring CPU, memory, storage, battery, thermals, network, and GPU.",
+    "url": "https://owieth.github.io/MacVitals/",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "macOS 15+",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "downloadUrl": "https://github.com/owieth/MacVitals/releases/latest",
+    "author": { "@type": "Person", "name": "Olivier Winkler", "url": "https://github.com/owieth" }
+  }
+  </script>
+</head>
+<body>
+
+  <main class="container">
+
+    <!-- Hero -->
+    <div class="hero">
+      <svg class="hero-icon" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="128" height="128" rx="28" fill="var(--accent)"/>
+        <path d="M32 80 L48 52 L60 68 L76 36 L96 80" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="76" cy="36" r="5" fill="#fff"/>
+      </svg>
+      <h1>MacVitals</h1>
+      <p>A lightweight macOS menu bar app for monitoring system vitals &mdash; CPU, memory, storage, battery, thermals, network, and GPU.</p>
+      <span class="badge">macOS 15+ &middot; Free &middot; Open Source</span>
+      <br>
+      <a class="download-btn" href="https://github.com/owieth/MacVitals/releases/latest">Download Latest Release</a>
+    </div>
+
+    <!-- Installation -->
+    <section>
+      <h2>Installation</h2>
+      <div class="install-steps">
+        <div class="install-step">
+          <span class="step-num">1</span>
+          <p>Download the DMG from the latest release</p>
+        </div>
+        <div class="install-step">
+          <span class="step-num">2</span>
+          <p>Drag MacVitals to Applications</p>
+        </div>
+        <div class="install-step">
+          <span class="step-num">3</span>
+          <p>Launch &mdash; it appears in the menu bar</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section>
+      <h2>Features</h2>
+      <div class="features">
+        <div class="feature-card">
+          <h3>CPU Monitoring</h3>
+          <p>Total, user, and system usage with per-core breakdown. View top processes by CPU consumption and history sparklines.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Memory</h3>
+          <p>Usage breakdown (active, wired, compressed), memory pressure indicator, and top memory consumers at a glance.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Storage</h3>
+          <p>Disk usage with a visual progress bar and real-time read/write speeds measured via IOKit.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Battery</h3>
+          <p>Charge level, health percentage, cycle count, charging state, time remaining, and battery temperature.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Thermals</h3>
+          <p>CPU and GPU temperatures read directly from the SMC, plus fan speeds for every detected fan.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Network</h3>
+          <p>Real-time upload and download throughput using system network interface statistics.</p>
+        </div>
+        <div class="feature-card">
+          <h3>GPU</h3>
+          <p>GPU utilization percentage via IOKit IOAccelerator, shown when a compatible GPU is detected.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Alerts</h3>
+          <p>Threshold-based notifications for sustained high CPU, critical memory pressure, low battery, and near-full disk.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section>
+      <h2>How It Works</h2>
+      <p>MacVitals lives in your menu bar and periodically samples system metrics using low-level macOS APIs. Click the icon to open a popover with live stats organized in expandable sections.</p>
+
+      <h3>Data Collection</h3>
+      <table>
+        <tr><th>Metric</th><th>API</th></tr>
+        <tr><td>CPU</td><td><code>host_processor_info()</code> delta sampling</td></tr>
+        <tr><td>Memory</td><td><code>host_statistics64()</code> VM info</td></tr>
+        <tr><td>Storage</td><td><code>FileManager</code> + IOKit disk I/O</td></tr>
+        <tr><td>Battery</td><td>IOKit <code>IOPSCopyPowerSourcesInfo</code></td></tr>
+        <tr><td>Thermal</td><td>SMC via IOKit (<code>AppleSMC</code>)</td></tr>
+        <tr><td>Network</td><td><code>getifaddrs</code> interface statistics</td></tr>
+        <tr><td>GPU</td><td>IOKit <code>IOAccelerator</code></td></tr>
+        <tr><td>Processes</td><td><code>proc_pidinfo</code> with delta-based CPU</td></tr>
+      </table>
+
+      <h3>Architecture</h3>
+      <p>MVVM with <code>@Observable</code> view models. A singleton <code>SystemMonitor</code> orchestrates all collectors on a configurable timer. The popover is managed by <code>NSPopover</code> via an <code>AppDelegate</code>, and the settings window uses a dedicated <code>WindowManager</code>.</p>
+    </section>
+
+    <!-- Settings -->
+    <section>
+      <h2>Settings</h2>
+      <ul>
+        <li><strong>Refresh Rate:</strong> 1s, 2s (default), or 5s sampling interval</li>
+        <li><strong>Menu Bar Display:</strong> Icon only, icon + CPU%, icon + temperature, CPU bar graph, or memory ring</li>
+        <li><strong>Temperature Unit:</strong> Celsius or Fahrenheit</li>
+        <li><strong>Launch at Login:</strong> Native macOS integration via <code>SMAppService</code></li>
+        <li><strong>Visible Sections:</strong> Show or hide CPU, memory, storage, battery, network, and thermal sections individually</li>
+        <li><strong>Global Hotkey:</strong> Toggle the popover with <kbd>Option</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd></li>
+      </ul>
+    </section>
+
+    <!-- Tech Stack -->
+    <section>
+      <h2>Tech Stack</h2>
+      <table>
+        <tr><th>Layer</th><th>Technology</th></tr>
+        <tr><td>Language</td><td>Swift 6</td></tr>
+        <tr><td>UI</td><td>SwiftUI with AppKit bridging</td></tr>
+        <tr><td>Hardware Access</td><td>IOKit (SMC, battery, GPU, disk I/O)</td></tr>
+        <tr><td>Process Info</td><td>Darwin <code>proc_pidinfo</code></td></tr>
+        <tr><td>Login Item</td><td>SMAppService (ServiceManagement)</td></tr>
+        <tr><td>Architecture</td><td>MVVM with @Observable ViewModels</td></tr>
+        <tr><td>Minimum macOS</td><td>15.0 (Sequoia)</td></tr>
+      </table>
+    </section>
+
+    <!-- Permissions -->
+    <section>
+      <h2>Permissions</h2>
+      <p>MacVitals runs outside the App Sandbox to access hardware sensors (SMC) and enumerate system processes. It does not require any special user-granted permissions in System Settings.</p>
+      <ul>
+        <li><strong>Non-sandboxed:</strong> Required for SMC temperature reads and <code>proc_pidinfo</code> process enumeration</li>
+        <li><strong>No network entitlements:</strong> The app makes zero network requests</li>
+        <li><strong>Notifications:</strong> Optional &mdash; used only for threshold alerts (CPU, memory, disk, battery). Requested on first alert trigger, not at launch</li>
+      </ul>
+    </section>
+
+    <!-- Privacy Policy -->
+    <section id="privacy">
+      <h2>Privacy Policy</h2>
+      <p><em>Last updated: March 17, 2026</em></p>
+
+      <div class="privacy-highlight">
+        <h3>The Short Version</h3>
+        <p>MacVitals collects zero personal data. Everything stays on your Mac. Nothing is ever transmitted anywhere.</p>
+      </div>
+
+      <h3>Data Collected</h3>
+      <p>MacVitals reads only transient system metrics (CPU usage, memory stats, temperatures, etc.) for real-time display. No data is persisted to disk beyond user preferences stored in <code>UserDefaults</code>.</p>
+
+      <h3>Data NOT Collected</h3>
+      <ul>
+        <li>Personal information, identifiers, or account data</li>
+        <li>Application usage, browsing history, or screen content</li>
+        <li>Location, contacts, or any sensitive data</li>
+        <li>Keystroke content or input events</li>
+      </ul>
+
+      <h3>Data Storage &amp; Transmission</h3>
+      <ul>
+        <li>The app makes zero network requests &mdash; no analytics, no telemetry, no crash reporting</li>
+        <li>No server, no cloud sync, no third-party service integration</li>
+        <li>The app has no network entitlements</li>
+        <li>User preferences are stored locally via <code>UserDefaults</code></li>
+      </ul>
+
+      <h3>Third-Party Services</h3>
+      <p>MacVitals uses no third-party dependencies, SDKs, or libraries. It is built entirely with Apple frameworks.</p>
+
+      <h3>Children</h3>
+      <p>MacVitals does not collect personal information from anyone, including children under the age of 13.</p>
+
+      <h3>Changes</h3>
+      <p>If this policy changes, the updated version will be posted on this page with a new date.</p>
+
+      <h3>Contact</h3>
+      <p>Questions about this policy? Open an issue on <a href="https://github.com/owieth/MacVitals/issues">GitHub</a>.</p>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; <script>document.write(new Date().getFullYear());</script> Olivier Winkler. <a href="https://github.com/owieth/MacVitals">View on GitHub</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>
