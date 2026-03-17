@@ -15,3 +15,15 @@ struct CPUInfo {
         topProcesses: []
     )
 }
+
+extension CPUInfo {
+    func with(topProcesses: [ProcessSnapshot]) -> CPUInfo {
+        CPUInfo(
+            totalUsage: totalUsage,
+            userUsage: userUsage,
+            systemUsage: systemUsage,
+            coreUsages: coreUsages,
+            topProcesses: topProcesses
+        )
+    }
+}

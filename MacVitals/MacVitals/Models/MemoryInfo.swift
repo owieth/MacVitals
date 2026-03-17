@@ -32,3 +32,18 @@ struct MemoryInfo {
         topProcesses: []
     )
 }
+
+extension MemoryInfo {
+    func with(topProcesses: [ProcessSnapshot]) -> MemoryInfo {
+        MemoryInfo(
+            total: total,
+            used: used,
+            active: active,
+            wired: wired,
+            compressed: compressed,
+            available: available,
+            pressure: pressure,
+            topProcesses: topProcesses
+        )
+    }
+}

@@ -51,29 +51,10 @@ class SystemMonitor: ObservableObject {
         let topByCPU = processCollector.collectTopByCPU()
         let topByMemory = processCollector.collectTopByMemory()
 
-        let cpuWithProcesses = CPUInfo(
-            totalUsage: cpu.totalUsage,
-            userUsage: cpu.userUsage,
-            systemUsage: cpu.systemUsage,
-            coreUsages: cpu.coreUsages,
-            topProcesses: topByCPU
-        )
-
-        let memoryWithProcesses = MemoryInfo(
-            total: memory.total,
-            used: memory.used,
-            active: memory.active,
-            wired: memory.wired,
-            compressed: memory.compressed,
-            available: memory.available,
-            pressure: memory.pressure,
-            topProcesses: topByMemory
-        )
-
         snapshot = SystemSnapshot(
             timestamp: Date(),
-            cpu: cpuWithProcesses,
-            memory: memoryWithProcesses,
+            cpu: cpu.with(topProcesses: topByCPU),
+            memory: memory.with(topProcesses: topByMemory),
             storage: storage,
             battery: battery,
             thermal: thermal,
