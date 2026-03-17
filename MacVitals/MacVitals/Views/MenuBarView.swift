@@ -36,6 +36,10 @@ struct MenuBarView: View {
                         NetworkSectionView(network: viewModel.snapshot?.network ?? .empty)
                     }
 
+                    if let gpu = viewModel.snapshot?.gpu {
+                        GPUSectionView(gpu: gpu)
+                    }
+
                     if preferences.showThermalSection {
                         ThermalSectionView(thermal: viewModel.snapshot?.thermal ?? .empty)
                     }
