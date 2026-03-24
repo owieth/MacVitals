@@ -7,7 +7,8 @@ struct ThermalSectionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Thermals")
-                .font(.headline)
+                .font(Theme.Fonts.sectionTitle)
+                .foregroundStyle(Theme.Colors.textPrimary)
             VStack(alignment: .leading, spacing: 8) {
                 if thermal.cpuTemperature != nil || thermal.gpuTemperature != nil {
                     HStack(spacing: 16) {

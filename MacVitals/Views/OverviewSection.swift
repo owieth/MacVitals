@@ -9,8 +9,8 @@ struct OverviewSection: View {
         VStack(spacing: 8) {
             if let snapshot {
                 Text("Uptime: \(Formatters.uptime(snapshot.uptime))")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(Theme.Fonts.caption)
+                    .foregroundStyle(Theme.Colors.textTertiary)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 HStack(spacing: 16) {
@@ -76,14 +76,12 @@ struct MetricBar: View {
     }
 
     private func colorForValue(_ value: Double) -> Color {
-        .forUsage(value * 100)
+        Theme.Colors.forUsage(value * 100)
     }
 }
 
 extension Color {
     static func forUsage(_ percentage: Double) -> Color {
-        if percentage > 90 { return .red }
-        if percentage > 70 { return .orange }
-        return .accentColor
+        Theme.Colors.forUsage(percentage)
     }
 }

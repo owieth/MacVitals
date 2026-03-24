@@ -6,7 +6,8 @@ struct NetworkSectionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Network")
-                .font(.headline)
+                .font(Theme.Fonts.sectionTitle)
+                .foregroundStyle(Theme.Colors.textPrimary)
             VStack(alignment: .leading, spacing: 8) {
                 if !network.interfaceName.isEmpty {
                     HStack {

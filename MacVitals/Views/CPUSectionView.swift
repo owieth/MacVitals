@@ -6,7 +6,8 @@ struct CPUSectionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("CPU")
-                .font(.headline)
+                .font(Theme.Fonts.sectionTitle)
+                .foregroundStyle(Theme.Colors.textPrimary)
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 16) {
                     StatLabel(title: "Total", value: Formatters.percentage(cpu.totalUsage))
@@ -59,10 +60,11 @@ struct StatLabel: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(title)
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
+                .font(Theme.Fonts.dataLabel)
+                .foregroundStyle(Theme.Colors.textTertiary)
             Text(value)
-                .font(.caption.monospacedDigit())
+                .font(Theme.Fonts.dataValue)
+                .foregroundStyle(Theme.Colors.textPrimary)
         }
     }
 }
