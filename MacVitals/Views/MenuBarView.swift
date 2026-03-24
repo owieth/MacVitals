@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MenuBarView: View {
-    @State private var viewModel = MenuBarViewModel()
+    @ObservedObject private var monitor = SystemMonitor.shared
     @EnvironmentObject var preferences: UserPreferences
 
     var body: some View {
@@ -11,37 +11,37 @@ struct MenuBarView: View {
             ScrollView {
                 VStack(spacing: 12) {
                     OverviewSection(
-                        snapshot: viewModel.snapshot,
-                        cpuHistory: SystemMonitor.shared.cpuHistory,
-                        memoryHistory: SystemMonitor.shared.memoryHistory
+                        snapshot: monitor.snapshot,
+                        cpuHistory: monitor.cpuHistory,
+                        memoryHistory: monitor.memoryHistory
                     )
 
                     if preferences.showCPUSection {
-                        CPUSectionView(cpu: viewModel.snapshot?.cpu ?? .empty)
+                        CPUSectionView(cpu: monitor.snapshot?.cpu ?? .empty)
                     }
 
                     if preferences.showMemorySection {
-                        MemorySectionView(memory: viewModel.snapshot?.memory ?? .empty)
+                        MemorySectionView(memory: monitor.snapshot?.memory ?? .empty)
                     }
 
                     if preferences.showStorageSection {
-                        StorageSectionView(storage: viewModel.snapshot?.storage ?? .empty)
+                        StorageSectionView(storage: monitor.snapshot?.storage ?? .empty)
                     }
 
-                    if preferences.showBatterySection, let battery = viewModel.snapshot?.battery {
+                    if preferences.showBatterySection, let battery = monitor.snapshot?.battery {
                         BatterySectionView(battery: battery)
                     }
 
                     if preferences.showNetworkSection {
-                        NetworkSectionView(network: viewModel.snapshot?.network ?? .empty)
+                        NetworkSectionView(network: monitor.snapshot?.network ?? .empty)
                     }
 
-                    if let gpu = viewModel.snapshot?.gpu {
+                    if let gpu = monitor.snapshot?.gpu {
                         GPUSectionView(gpu: gpu)
                     }
 
                     if preferences.showThermalSection {
-                        ThermalSectionView(thermal: viewModel.snapshot?.thermal ?? .empty)
+                        ThermalSectionView(thermal: monitor.snapshot?.thermal ?? .empty)
                     }
                 }
                 .padding(16)
