@@ -5,11 +5,17 @@ struct NetworkInfo {
     let downloadBytesPerSec: UInt64
     let interfaceName: String
     let ipAddress: String
+    let gatewayIP: String
+    let macAddress: String
+    let externalIP: String?
 
     static let empty = NetworkInfo(
         uploadBytesPerSec: 0,
         downloadBytesPerSec: 0,
         interfaceName: "",
-        ipAddress: ""
+        ipAddress: "",
+        gatewayIP: "",
+        macAddress: "",
+        externalIP: nil
     )
 }

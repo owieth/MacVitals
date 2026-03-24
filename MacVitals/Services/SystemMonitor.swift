@@ -62,6 +62,9 @@ class SystemMonitor: ObservableObject {
         let storage = storageCollector.collect()
         let battery = batteryCollector.collect()
         let thermal = thermalCollector.collect(using: smcClient)
+        if UserPreferences.shared.showExternalIP {
+            networkCollector.fetchExternalIPIfNeeded()
+        }
         let network = networkCollector.collect()
         let gpu = gpuCollector.collect()
         let uptime = ProcessInfo.processInfo.systemUptime
