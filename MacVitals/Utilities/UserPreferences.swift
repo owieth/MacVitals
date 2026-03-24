@@ -112,6 +112,28 @@ class UserPreferences: ObservableObject {
         didSet { UserDefaults.standard.set(selectedTab, forKey: "selectedTab") }
     }
 
+    @Published var sectionOrder: [String] {
+        didSet { UserDefaults.standard.set(sectionOrder, forKey: "sectionOrder") }
+    }
+
+    @Published var cpuAlertThreshold: Double {
+        didSet { UserDefaults.standard.set(cpuAlertThreshold, forKey: "cpuAlertThreshold") }
+    }
+
+    @Published var memoryAlertEnabled: Bool {
+        didSet { UserDefaults.standard.set(memoryAlertEnabled, forKey: "memoryAlertEnabled") }
+    }
+
+    @Published var storageAlertThreshold: Double {
+        didSet { UserDefaults.standard.set(storageAlertThreshold, forKey: "storageAlertThreshold") }
+    }
+
+    @Published var batteryAlertThreshold: Double {
+        didSet { UserDefaults.standard.set(batteryAlertThreshold, forKey: "batteryAlertThreshold") }
+    }
+
+    static let defaultSectionOrder = ["cpu", "memory", "storage", "battery", "network", "gpu", "thermal", "bluetooth"]
+
     private init() {
         UserDefaults.standard.register(defaults: [
             "showCPUSection": true,
@@ -141,6 +163,11 @@ class UserPreferences: ObservableObject {
         self.showNetworkSection = UserDefaults.standard.bool(forKey: "showNetworkSection")
         self.showExternalIP = UserDefaults.standard.bool(forKey: "showExternalIP")
         self.selectedTab = UserDefaults.standard.integer(forKey: "selectedTab")
+        self.sectionOrder = (UserDefaults.standard.stringArray(forKey: "sectionOrder")) ?? Self.defaultSectionOrder
+        self.cpuAlertThreshold = UserDefaults.standard.object(forKey: "cpuAlertThreshold") as? Double ?? 90
+        self.memoryAlertEnabled = UserDefaults.standard.object(forKey: "memoryAlertEnabled") as? Bool ?? true
+        self.storageAlertThreshold = UserDefaults.standard.object(forKey: "storageAlertThreshold") as? Double ?? 95
+        self.batteryAlertThreshold = UserDefaults.standard.object(forKey: "batteryAlertThreshold") as? Double ?? 20
     }
 
     private func updateLaunchAtLogin() {
