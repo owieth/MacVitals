@@ -9,5 +9,6 @@ struct SystemSnapshot {
     let thermal: ThermalInfo
     let network: NetworkInfo
     let gpu: GPUInfo?
+    let bluetooth: [BluetoothDeviceInfo]
     let uptime: TimeInterval
 }

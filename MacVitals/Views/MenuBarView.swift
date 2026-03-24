@@ -56,6 +56,11 @@ struct MenuBarView: View {
                             ThermalSectionView(thermal: monitor.snapshot?.thermal ?? .empty)
                                 .cardStyle()
                         }
+
+                        if let btDevices = monitor.snapshot?.bluetooth, !btDevices.isEmpty {
+                            BluetoothSectionView(devices: btDevices)
+                                .cardStyle()
+                        }
                     }
                     .padding(Theme.Spacing.contentPadding)
                 }
