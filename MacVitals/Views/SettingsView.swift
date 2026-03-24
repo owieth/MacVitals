@@ -127,6 +127,7 @@ struct NotificationSettingsView: View {
 }
 
 struct DataSettingsView: View {
+    @EnvironmentObject var preferences: UserPreferences
     @State private var showExport = false
 
     var body: some View {
@@ -147,6 +148,34 @@ struct DataSettingsView: View {
             Section("Export") {
                 Button("Export to CSV...") {
                     showExport = true
+                }
+            }
+
+            Section("Web Dashboard") {
+                Toggle("Enable web dashboard", isOn: $preferences.webDashboardEnabled)
+                    .onChange(of: preferences.webDashboardEnabled) {
+                        SystemMonitor.shared.updateWebServer()
+                    }
+
+                HStack {
+                    Text("Port")
+                    Spacer()
+                    TextField("Port", value: $preferences.webDashboardPort, format: .number)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 80)
+                        .multilineTextAlignment(.trailing)
+                }
+
+                if preferences.webDashboardEnabled {
+                    HStack {
+                        Text("URL")
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Text("http://localhost:\(preferences.webDashboardPort)")
+                            .font(.caption.monospacedDigit())
+                            .foregroundStyle(.secondary)
+                            .textSelection(.enabled)
+                    }
                 }
             }
         }
