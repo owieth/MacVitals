@@ -14,6 +14,9 @@ struct SettingsView: View {
             NotificationSettingsView()
                 .tabItem { Label("Notifications", systemImage: "bell") }
 
+            DataSettingsView()
+                .tabItem { Label("Data", systemImage: "square.and.arrow.up") }
+
             AboutSettingsView()
                 .tabItem { Label("About", systemImage: "info.circle") }
         }
@@ -120,6 +123,37 @@ struct NotificationSettingsView: View {
             }
         }
         .formStyle(.grouped)
+    }
+}
+
+struct DataSettingsView: View {
+    @State private var showExport = false
+
+    var body: some View {
+        Form {
+            Section("Recording") {
+                HStack {
+                    Text("Snapshots in buffer")
+                    Spacer()
+                    Text("\(DataRecorder.shared.snapshotCount)")
+                        .monospacedDigit()
+                        .foregroundStyle(.secondary)
+                }
+                Text("Up to 1 hour of data is kept in memory")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section("Export") {
+                Button("Export to CSV...") {
+                    showExport = true
+                }
+            }
+        }
+        .formStyle(.grouped)
+        .sheet(isPresented: $showExport) {
+            ExportView()
+        }
     }
 }
 
