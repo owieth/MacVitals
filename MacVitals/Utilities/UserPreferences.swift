@@ -108,6 +108,10 @@ class UserPreferences: ObservableObject {
         didSet { UserDefaults.standard.set(showExternalIP, forKey: "showExternalIP") }
     }
 
+    @Published var selectedTab: Int {
+        didSet { UserDefaults.standard.set(selectedTab, forKey: "selectedTab") }
+    }
+
     private init() {
         UserDefaults.standard.register(defaults: [
             "showCPUSection": true,
@@ -136,6 +140,7 @@ class UserPreferences: ObservableObject {
         self.showThermalSection = UserDefaults.standard.bool(forKey: "showThermalSection")
         self.showNetworkSection = UserDefaults.standard.bool(forKey: "showNetworkSection")
         self.showExternalIP = UserDefaults.standard.bool(forKey: "showExternalIP")
+        self.selectedTab = UserDefaults.standard.integer(forKey: "selectedTab")
     }
 
     private func updateLaunchAtLogin() {

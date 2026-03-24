@@ -13,6 +13,10 @@ struct ProcessCollector {
         return (topCPU, topMemory)
     }
 
+    mutating func collectAll() -> [ProcessSnapshot] {
+        gatherProcesses()
+    }
+
     private mutating func gatherProcesses() -> [ProcessSnapshot] {
         let pids = allPids()
         var processes: [ProcessSnapshot] = []

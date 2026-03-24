@@ -13,57 +13,11 @@ struct MenuBarView: View {
                 headerView
                 Divider()
                     .overlay(Theme.Colors.cardBorder)
-                ScrollView {
-                    VStack(spacing: Theme.Spacing.sectionSpacing) {
-                        OverviewSection(
-                            snapshot: monitor.snapshot,
-                            cpuHistory: monitor.cpuHistory,
-                            memoryHistory: monitor.memoryHistory
-                        )
-                        .cardStyle()
+                tabBar
+                Divider()
+                    .overlay(Theme.Colors.cardBorder)
 
-                        if preferences.showCPUSection {
-                            CPUSectionView(cpu: monitor.snapshot?.cpu ?? .empty)
-                                .cardStyle()
-                        }
-
-                        if preferences.showMemorySection {
-                            MemorySectionView(memory: monitor.snapshot?.memory ?? .empty)
-                                .cardStyle()
-                        }
-
-                        if preferences.showStorageSection {
-                            StorageSectionView(storage: monitor.snapshot?.storage ?? .empty)
-                                .cardStyle()
-                        }
-
-                        if preferences.showBatterySection, let battery = monitor.snapshot?.battery {
-                            BatterySectionView(battery: battery)
-                                .cardStyle()
-                        }
-
-                        if preferences.showNetworkSection {
-                            NetworkSectionView(network: monitor.snapshot?.network ?? .empty)
-                                .cardStyle()
-                        }
-
-                        if let gpu = monitor.snapshot?.gpu {
-                            GPUSectionView(gpu: gpu)
-                                .cardStyle()
-                        }
-
-                        if preferences.showThermalSection {
-                            ThermalSectionView(thermal: monitor.snapshot?.thermal ?? .empty)
-                                .cardStyle()
-                        }
-
-                        if let btDevices = monitor.snapshot?.bluetooth, !btDevices.isEmpty {
-                            BluetoothSectionView(devices: btDevices)
-                                .cardStyle()
-                        }
-                    }
-                    .padding(Theme.Spacing.contentPadding)
-                }
+                tabContent
 
                 GradientBar()
                     .padding(.horizontal, Theme.Spacing.contentPadding)
@@ -105,4 +59,52 @@ struct MenuBarView: View {
         .padding(.vertical, 12)
     }
 
+    private var tabBar: some View {
+        HStack(spacing: 0) {
+            tabButton(title: "Dashboard", icon: "gauge", index: 0)
+            tabButton(title: "Processes", icon: "list.bullet", index: 1)
+            tabButton(title: "Sensors", icon: "thermometer.medium", index: 2)
+        }
+        .padding(.horizontal, Theme.Spacing.contentPadding)
+        .padding(.vertical, 6)
+    }
+
+    private func tabButton(title: String, icon: String, index: Int) -> some View {
+        Button {
+            preferences.selectedTab = index
+        } label: {
+            VStack(spacing: 3) {
+                Image(systemName: icon)
+                    .font(.system(size: 12))
+                Text(title)
+                    .font(Theme.Fonts.caption)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 4)
+            .foregroundStyle(preferences.selectedTab == index ? Theme.Colors.accentCyan : Theme.Colors.textTertiary)
+            .overlay(alignment: .bottom) {
+                if preferences.selectedTab == index {
+                    Rectangle()
+                        .fill(Theme.Colors.accentCyan)
+                        .frame(height: 2)
+                        .clipShape(RoundedRectangle(cornerRadius: 1))
+                }
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
+    private var tabContent: some View {
+        switch preferences.selectedTab {
+        case 0:
+            DashboardTabView()
+        case 1:
+            ProcessesTabView()
+        case 2:
+            SensorsTabView()
+        default:
+            DashboardTabView()
+        }
+    }
 }
