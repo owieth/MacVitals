@@ -4,7 +4,9 @@ struct MemorySectionView: View {
     let memory: MemoryInfo
 
     var body: some View {
-        DisclosureGroup("Memory") {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Memory")
+                .font(.headline)
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text("\(Formatters.bytes(memory.used)) / \(Formatters.bytes(memory.total))")
@@ -26,7 +28,6 @@ struct MemorySectionView: View {
                         .lineLimit(1)
                 }
             }
-            .padding(.top, 4)
         }
     }
 }

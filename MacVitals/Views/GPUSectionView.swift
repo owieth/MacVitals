@@ -4,7 +4,9 @@ struct GPUSectionView: View {
     let gpu: GPUInfo
 
     var body: some View {
-        DisclosureGroup("GPU") {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("GPU")
+                .font(.headline)
             VStack(alignment: .leading, spacing: 8) {
                 if !gpu.name.isEmpty {
                     Text(gpu.name)
@@ -26,7 +28,6 @@ struct GPUSectionView: View {
                     .accessibilityLabel("GPU utilization")
                     .accessibilityValue(Formatters.percentage(gpu.utilizationPercentage))
             }
-            .padding(.top, 4)
         }
     }
 }

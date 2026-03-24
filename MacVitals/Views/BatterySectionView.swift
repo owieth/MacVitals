@@ -4,7 +4,9 @@ struct BatterySectionView: View {
     let battery: BatteryInfo
 
     var body: some View {
-        DisclosureGroup("Battery") {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Battery")
+                .font(.headline)
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text(Formatters.percentage(battery.level))
@@ -35,7 +37,6 @@ struct BatterySectionView: View {
                     }
                 }
             }
-            .padding(.top, 4)
         }
     }
 }
