@@ -6,77 +6,74 @@ struct OverviewSection: View {
     var memoryHistory: [Double] = []
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 12) {
             if let snapshot {
                 Text("Uptime: \(Formatters.uptime(snapshot.uptime))")
                     .font(Theme.Fonts.caption)
                     .foregroundStyle(Theme.Colors.textTertiary)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                HStack(spacing: 16) {
-                    MetricBar(
-                        label: "CPU",
-                        value: snapshot.cpu.totalUsage / 100,
-                        displayValue: Formatters.percentage(snapshot.cpu.totalUsage)
+                HStack(spacing: 20) {
+                    ringGauge(
+                        title: "CPU",
+                        value: snapshot.cpu.totalUsage,
+                        gradient: RingGradients.forUsage(snapshot.cpu.totalUsage)
                     )
-                    MetricBar(
-                        label: "Memory",
-                        value: snapshot.memory.usagePercentage / 100,
-                        displayValue: Formatters.percentage(snapshot.memory.usagePercentage)
-                    )
-                }
 
-                if !cpuHistory.isEmpty || !memoryHistory.isEmpty {
-                    HStack(spacing: 16) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("CPU")
-                                .font(.system(size: 9))
-                                .foregroundStyle(.tertiary)
-                            SparklineView(data: cpuHistory, color: .blue)
-                                .frame(height: 24)
-                        }
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Memory")
-                                .font(.system(size: 9))
-                                .foregroundStyle(.tertiary)
-                            SparklineView(data: memoryHistory, color: .green)
-                                .frame(height: 24)
-                        }
+                    ringGauge(
+                        title: "Memory",
+                        value: snapshot.memory.usagePercentage,
+                        gradient: RingGradients.forUsage(snapshot.memory.usagePercentage)
+                    )
+
+                    if let gpu = snapshot.gpu {
+                        ringGauge(
+                            title: "GPU",
+                            value: gpu.utilizationPercentage,
+                            gradient: RingGradients.forUsage(gpu.utilizationPercentage)
+                        )
+                    }
+                }
+                .frame(maxWidth: .infinity)
+
+                if !cpuHistory.isEmpty {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("CPU")
+                            .font(Theme.Fonts.caption)
+                            .foregroundStyle(Theme.Colors.textTertiary)
+                        PulseLineView(data: cpuHistory)
+                            .frame(height: 32)
                     }
                 }
             } else {
                 Text("Loading...")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(Theme.Fonts.dataValue)
+                    .foregroundStyle(Theme.Colors.textSecondary)
             }
         }
     }
-}
 
-struct MetricBar: View {
-    let label: String
-    let value: Double
-    let displayValue: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text(label)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Spacer()
-                Text(displayValue)
-                    .font(.caption.monospacedDigit())
+    private func ringGauge(
+        title: String,
+        value: Double,
+        gradient: AngularGradient
+    ) -> some View {
+        VStack(spacing: 6) {
+            RingGaugeView(
+                value: value / 100,
+                lineWidth: 5,
+                gradient: gradient
+            ) {
+                Text(Formatters.percentage(value))
+                    .font(.system(size: 11, weight: .medium, design: .rounded).monospacedDigit())
+                    .foregroundStyle(Theme.Colors.textPrimary)
             }
-            ProgressView(value: min(max(value, 0), 1))
-                .tint(colorForValue(value))
-                .accessibilityLabel("\(label) usage")
-                .accessibilityValue(displayValue)
-        }
-    }
+            .frame(width: 64, height: 64)
 
-    private func colorForValue(_ value: Double) -> Color {
-        Theme.Colors.forUsage(value * 100)
+            Text(title)
+                .font(Theme.Fonts.dataLabel)
+                .foregroundStyle(Theme.Colors.textSecondary)
+        }
     }
 }
 
