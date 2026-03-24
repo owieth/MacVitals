@@ -124,7 +124,10 @@ class SMCClient {
             &outputSize
         )
 
-        guard result == KERN_SUCCESS else { return nil }
+        guard result == KERN_SUCCESS else {
+            Self.logger.debug("readKey failed for '\(key)' with result: \(result)")
+            return nil
+        }
 
         return withUnsafeBytes(of: outputStruct.bytes) {
             Array($0.prefix(Int(dataSize)))
