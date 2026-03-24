@@ -14,14 +14,8 @@ struct MenuBarView: View {
                 Divider()
                     .overlay(Theme.Colors.cardBorder)
                 tabBar
-                Divider()
-                    .overlay(Theme.Colors.cardBorder)
 
                 tabContent
-
-                GradientBar()
-                    .padding(.horizontal, Theme.Spacing.contentPadding)
-                    .padding(.bottom, 8)
             }
         }
         .frame(
@@ -39,6 +33,7 @@ struct MenuBarView: View {
                     .foregroundStyle(Theme.Colors.textSecondary)
             }
             .buttonStyle(.plain)
+            .focusable(false)
 
             Spacer()
 
@@ -54,6 +49,7 @@ struct MenuBarView: View {
                     .foregroundStyle(Theme.Colors.textSecondary)
             }
             .buttonStyle(.plain)
+            .focusable(false)
         }
         .padding(.horizontal, Theme.Spacing.contentPadding)
         .padding(.vertical, 12)
@@ -66,7 +62,7 @@ struct MenuBarView: View {
             tabButton(title: "Sensors", icon: "thermometer.medium", index: 2)
         }
         .padding(.horizontal, Theme.Spacing.contentPadding)
-        .padding(.vertical, 6)
+        .padding(.top, 6)
     }
 
     private func tabButton(title: String, icon: String, index: Int) -> some View {
@@ -80,18 +76,17 @@ struct MenuBarView: View {
                     .font(Theme.Fonts.caption)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 4)
+            .padding(.top, 4)
+            .padding(.bottom, 6)
             .foregroundStyle(preferences.selectedTab == index ? Theme.Colors.accentCyan : Theme.Colors.textTertiary)
             .overlay(alignment: .bottom) {
-                if preferences.selectedTab == index {
-                    Rectangle()
-                        .fill(Theme.Colors.accentCyan)
-                        .frame(height: 2)
-                        .clipShape(RoundedRectangle(cornerRadius: 1))
-                }
+                Rectangle()
+                    .fill(preferences.selectedTab == index ? Theme.Colors.accentCyan : .clear)
+                    .frame(height: 2)
             }
         }
         .buttonStyle(.plain)
+        .focusable(false)
     }
 
     @ViewBuilder

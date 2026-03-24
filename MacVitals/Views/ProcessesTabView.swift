@@ -39,6 +39,7 @@ struct ProcessesTabView: View {
                         Text(mode.rawValue).tag(mode)
                     }
                 }
+                .labelsHidden()
                 .pickerStyle(.segmented)
                 .frame(width: 120)
             }
@@ -47,7 +48,7 @@ struct ProcessesTabView: View {
 
             processHeader
 
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 0) {
                     ForEach(filteredProcesses) { process in
                         processRow(process)

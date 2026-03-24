@@ -5,7 +5,7 @@ struct SensorsTabView: View {
     @EnvironmentObject var preferences: UserPreferences
 
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: Theme.Spacing.sectionSpacing) {
                 if let thermal = monitor.snapshot?.thermal, !thermal.allSensors.isEmpty {
                     let grouped = Dictionary(grouping: thermal.allSensors, by: \.category)

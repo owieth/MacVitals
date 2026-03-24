@@ -49,6 +49,7 @@ struct BatterySectionView: View {
                         }
                     }
                 }
+                Spacer(minLength: 0)
             }
         }
     }
