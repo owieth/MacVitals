@@ -109,6 +109,7 @@ class SystemMonitor: ObservableObject {
             uptime: uptime
         )
         snapshot = newSnapshot
+        DataRecorder.shared.record(newSnapshot)
         if timer != nil {
             AlertManager.shared.evaluate(snapshot: newSnapshot)
         }
