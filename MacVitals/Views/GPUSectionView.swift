@@ -36,6 +36,7 @@ struct GPUSectionView: View {
                         }
                     }
                 }
+                Spacer(minLength: 0)
             }
         }
     }

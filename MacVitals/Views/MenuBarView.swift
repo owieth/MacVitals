@@ -18,10 +18,6 @@ struct MenuBarView: View {
                     .overlay(Theme.Colors.cardBorder)
 
                 tabContent
-
-                GradientBar()
-                    .padding(.horizontal, Theme.Spacing.contentPadding)
-                    .padding(.bottom, 8)
             }
         }
         .frame(
