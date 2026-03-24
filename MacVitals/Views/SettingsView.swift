@@ -11,10 +11,13 @@ struct SettingsView: View {
             DisplaySettingsView()
                 .tabItem { Label("Display", systemImage: "eye") }
 
+            NotificationSettingsView()
+                .tabItem { Label("Notifications", systemImage: "bell") }
+
             AboutSettingsView()
                 .tabItem { Label("About", systemImage: "info.circle") }
         }
-        .frame(width: 420, height: 320)
+        .frame(width: 420, height: 380)
     }
 }
 
@@ -62,6 +65,58 @@ struct DisplaySettingsView: View {
                 Toggle("Battery", isOn: $preferences.showBatterySection)
                 Toggle("Network", isOn: $preferences.showNetworkSection)
                 Toggle("Thermals", isOn: $preferences.showThermalSection)
+            }
+        }
+        .formStyle(.grouped)
+    }
+}
+
+struct NotificationSettingsView: View {
+    @EnvironmentObject var preferences: UserPreferences
+
+    var body: some View {
+        Form {
+            Section("CPU") {
+                HStack {
+                    Text("Alert when above")
+                    Spacer()
+                    Text(Formatters.percentage(preferences.cpuAlertThreshold))
+                        .monospacedDigit()
+                        .frame(width: 40)
+                }
+                Slider(value: $preferences.cpuAlertThreshold, in: 50...100, step: 5)
+                Text("Triggers after sustained for 5 minutes")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section("Memory") {
+                Toggle("Alert on critical pressure", isOn: $preferences.memoryAlertEnabled)
+            }
+
+            Section("Storage") {
+                HStack {
+                    Text("Alert when above")
+                    Spacer()
+                    Text(Formatters.percentage(preferences.storageAlertThreshold))
+                        .monospacedDigit()
+                        .frame(width: 40)
+                }
+                Slider(value: $preferences.storageAlertThreshold, in: 70...99, step: 1)
+            }
+
+            Section("Battery") {
+                HStack {
+                    Text("Alert when below")
+                    Spacer()
+                    Text(Formatters.percentage(preferences.batteryAlertThreshold))
+                        .monospacedDigit()
+                        .frame(width: 40)
+                }
+                Slider(value: $preferences.batteryAlertThreshold, in: 5...50, step: 5)
+                Text("Only when not charging")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)

@@ -20,21 +20,25 @@ class AlertManager {
             hasRequestedPermission = true
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
         }
-        checkCPU(snapshot.cpu)
-        checkMemory(snapshot.memory)
-        checkStorage(snapshot.storage)
+
+        let prefs = UserPreferences.shared
+        checkCPU(snapshot.cpu, threshold: prefs.cpuAlertThreshold)
+        if prefs.memoryAlertEnabled {
+            checkMemory(snapshot.memory)
+        }
+        checkStorage(snapshot.storage, threshold: prefs.storageAlertThreshold)
         if let battery = snapshot.battery {
-            checkBattery(battery)
+            checkBattery(battery, threshold: prefs.batteryAlertThreshold)
         }
     }
 
-    private func checkCPU(_ cpu: CPUInfo) {
-        if cpu.totalUsage > 90 {
+    private func checkCPU(_ cpu: CPUInfo, threshold: Double) {
+        if cpu.totalUsage > threshold {
             if highCPUStart == nil { highCPUStart = Date() }
             if let start = highCPUStart, Date().timeIntervalSince(start) > 300 {
                 sendNotification(
                     title: "High CPU Usage",
-                    body: "CPU has been above 90% for 5 minutes (\(Formatters.percentage(cpu.totalUsage)))"
+                    body: "CPU has been above \(Formatters.percentage(threshold)) for 5 minutes (\(Formatters.percentage(cpu.totalUsage)))"
                 )
                 highCPUStart = nil
             }
@@ -51,16 +55,16 @@ class AlertManager {
         )
     }
 
-    private func checkStorage(_ storage: StorageInfo) {
-        guard storage.usagePercentage > 95, canAlert(&lastDiskAlert) else { return }
+    private func checkStorage(_ storage: StorageInfo, threshold: Double) {
+        guard storage.usagePercentage > threshold, canAlert(&lastDiskAlert) else { return }
         sendNotification(
             title: "Disk Almost Full",
             body: "Storage is \(Formatters.percentage(storage.usagePercentage)) full"
         )
     }
 
-    private func checkBattery(_ battery: BatteryInfo) {
-        guard battery.level < 20, !battery.isCharging, canAlert(&lastBatteryAlert) else { return }
+    private func checkBattery(_ battery: BatteryInfo, threshold: Double) {
+        guard battery.level < threshold, !battery.isCharging, canAlert(&lastBatteryAlert) else { return }
         sendNotification(
             title: "Low Battery",
             body: "Battery is at \(Formatters.percentage(battery.level))"
