@@ -18,7 +18,7 @@ class SystemMonitor: ObservableObject {
     private let memoryCollector = MemoryCollector()
     private var storageCollector = StorageCollector()
     private let batteryCollector = BatteryCollector()
-    private let thermalCollector = ThermalCollector()
+    private var thermalCollector = ThermalCollector()
     private var networkCollector = NetworkCollector()
     private let gpuCollector = GPUCollector()
     private var processCollector = ProcessCollector()
@@ -31,6 +31,8 @@ class SystemMonitor: ObservableObject {
         stop()
         if !smcClient.open() {
             logger.warning("Failed to open SMC connection — thermal data will be unavailable")
+        } else {
+            thermalCollector.discoverKeys(using: smcClient)
         }
 
         let interval = UserPreferences.shared.refreshRate.rawValue

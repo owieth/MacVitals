@@ -77,6 +77,62 @@ class SMCClient {
         return Double(value) / 256.0
     }
 
+    func totalKeyCount() -> UInt32 {
+        guard let bytes = readKey(key: "#KEY", dataSize: 4) else { return 0 }
+        return (UInt32(bytes[0]) << 24) | (UInt32(bytes[1]) << 16) |
+               (UInt32(bytes[2]) << 8)  | UInt32(bytes[3])
+    }
+
+    func keyAtIndex(_ index: UInt32) -> String? {
+        guard isOpen else { return nil }
+
+        var inputStruct = SMCKeyData()
+        var outputStruct = SMCKeyData()
+
+        let kSMCGetKeyFromIndex: UInt8 = 8
+        inputStruct.data8 = kSMCGetKeyFromIndex
+        inputStruct.data32 = index
+
+        let inputSize = MemoryLayout<SMCKeyData>.size
+        var outputSize = MemoryLayout<SMCKeyData>.size
+
+        let result = IOConnectCallStructMethod(
+            connection,
+            2,
+            &inputStruct,
+            inputSize,
+            &outputStruct,
+            &outputSize
+        )
+
+        guard result == KERN_SUCCESS else { return nil }
+
+        let key = outputStruct.key
+        let chars: [UInt8] = [
+            UInt8((key >> 24) & 0xFF),
+            UInt8((key >> 16) & 0xFF),
+            UInt8((key >> 8) & 0xFF),
+            UInt8(key & 0xFF),
+        ]
+        return String(bytes: chars, encoding: .ascii)
+    }
+
+    func discoverTemperatureKeys() -> [String] {
+        let count = totalKeyCount()
+        guard count > 0 else { return [] }
+
+        var keys: [String] = []
+        for i: UInt32 in 0..<count {
+            guard let key = keyAtIndex(i) else { continue }
+            guard key.first == "T" else { continue }
+            if let temp = readTemperature(key: key), temp > 0, temp < 150 {
+                keys.append(key)
+            }
+        }
+        Self.logger.info("Discovered \(keys.count) temperature keys")
+        return keys
+    }
+
     func readFanSpeed(index: Int) -> Int? {
         readFPE2(index: index, suffix: "Ac")
     }
