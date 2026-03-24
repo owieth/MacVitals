@@ -29,7 +29,9 @@ class SystemMonitor: ObservableObject {
     func start() {
         logger.info("Starting system monitor")
         stop()
-        _ = smcClient.open()
+        if !smcClient.open() {
+            logger.warning("Failed to open SMC connection — thermal data will be unavailable")
+        }
 
         let interval = UserPreferences.shared.refreshRate.rawValue
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
