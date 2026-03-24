@@ -6,6 +6,7 @@ struct ThermalCollector {
 
     private var discoveredCPUKeys: [String] = []
     private var discoveredGPUKeys: [String] = []
+    private var discoveredAllKeys: [String] = []
     private var hasDiscovered = false
 
     mutating func discoverKeys(using smc: SMCClient) {
@@ -17,11 +18,12 @@ struct ThermalCollector {
         discoveredGPUKeys = allTempKeys.filter { key in
             key.hasPrefix("Tg") || key.hasPrefix("TG")
         }
+        discoveredAllKeys = allTempKeys
 
         hasDiscovered = true
-        let cpuDesc = discoveredCPUKeys.joined(separator: ", ")
-        let gpuDesc = discoveredGPUKeys.joined(separator: ", ")
-        Self.logger.info("CPU keys: [\(cpuDesc)], GPU keys: [\(gpuDesc)]")
+        let cpuCount = discoveredCPUKeys.count
+        let gpuCount = discoveredGPUKeys.count
+        Self.logger.info("Discovered \(allTempKeys.count) temperature keys total, CPU: \(cpuCount), GPU: \(gpuCount)")
     }
 
     func collect(using smc: SMCClient) -> ThermalInfo {
@@ -46,6 +48,21 @@ struct ThermalCollector {
             }
         }
 
-        return ThermalInfo(cpuTemperature: cpuTemp, gpuTemperature: gpuTemp, fans: fans)
+        let allSensors: [SensorReading] = hasDiscovered ? discoveredAllKeys.compactMap { key in
+            guard let temp = smc.readTemperature(key: key), temp > 0, temp < 150 else { return nil }
+            return SensorReading(
+                id: key,
+                label: SensorLabelMap.label(for: key),
+                value: temp,
+                category: SensorLabelMap.category(for: key)
+            )
+        } : []
+
+        return ThermalInfo(
+            cpuTemperature: cpuTemp,
+            gpuTemperature: gpuTemp,
+            fans: fans,
+            allSensors: allSensors
+        )
     }
 }

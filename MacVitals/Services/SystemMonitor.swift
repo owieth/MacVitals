@@ -22,6 +22,7 @@ class SystemMonitor: ObservableObject {
     private var networkCollector = NetworkCollector()
     private let gpuCollector = GPUCollector()
     private var processCollector = ProcessCollector()
+    private let bluetoothCollector = BluetoothCollector()
     private let smcClient = SMCClient()
 
     private init() {}
@@ -62,6 +63,9 @@ class SystemMonitor: ObservableObject {
         let storage = storageCollector.collect()
         let battery = batteryCollector.collect()
         let thermal = thermalCollector.collect(using: smcClient)
+        if UserPreferences.shared.showExternalIP {
+            networkCollector.fetchExternalIPIfNeeded()
+        }
         let network = networkCollector.collect()
         let gpu = gpuCollector.collect()
         let uptime = ProcessInfo.processInfo.systemUptime
@@ -84,6 +88,8 @@ class SystemMonitor: ObservableObject {
         memoryHistory.append(memory.usagePercentage)
         if memoryHistory.count > maxHistorySize { memoryHistory.removeFirst() }
 
+        let bluetooth = tickCount % 3 == 0 ? bluetoothCollector.collect() : (snapshot?.bluetooth ?? [])
+
         let newSnapshot = SystemSnapshot(
             timestamp: Date(),
             cpu: cpu.with(topProcesses: topByCPU),
@@ -93,6 +99,7 @@ class SystemMonitor: ObservableObject {
             thermal: thermal,
             network: network,
             gpu: gpu,
+            bluetooth: bluetooth,
             uptime: uptime
         )
         snapshot = newSnapshot

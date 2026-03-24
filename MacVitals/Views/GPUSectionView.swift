@@ -29,6 +29,12 @@ struct GPUSectionView: View {
                             .lineLimit(1)
                     }
                     StatLabel(title: "Utilization", value: Formatters.percentage(gpu.utilizationPercentage))
+                    if let vramUsed = gpu.vramUsed, let vramTotal = gpu.vramTotal {
+                        HStack(spacing: 16) {
+                            StatLabel(title: "VRAM Used", value: Formatters.bytes(vramUsed))
+                            StatLabel(title: "VRAM Total", value: Formatters.bytes(vramTotal))
+                        }
+                    }
                 }
             }
         }
