@@ -8,26 +8,28 @@ struct GPUSectionView: View {
             Text("GPU")
                 .font(Theme.Fonts.sectionTitle)
                 .foregroundStyle(Theme.Colors.textPrimary)
-            VStack(alignment: .leading, spacing: 8) {
-                if !gpu.name.isEmpty {
-                    Text(gpu.name)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
 
-                HStack {
-                    Text("Utilization")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Spacer()
+            HStack(spacing: 12) {
+                RingGaugeView(
+                    value: gpu.utilizationPercentage / 100,
+                    lineWidth: 5,
+                    gradient: RingGradients.forUsage(gpu.utilizationPercentage)
+                ) {
                     Text(Formatters.percentage(gpu.utilizationPercentage))
-                        .font(.caption.monospacedDigit())
+                        .font(.system(size: 11, weight: .medium, design: .rounded).monospacedDigit())
+                        .foregroundStyle(Theme.Colors.textPrimary)
                 }
+                .frame(width: 52, height: 52)
 
-                ProgressView(value: min(max(gpu.utilizationPercentage / 100, 0), 1))
-                    .tint(gpu.utilizationPercentage > 90 ? .red : gpu.utilizationPercentage > 70 ? .orange : .accentColor)
-                    .accessibilityLabel("GPU utilization")
-                    .accessibilityValue(Formatters.percentage(gpu.utilizationPercentage))
+                VStack(alignment: .leading, spacing: 4) {
+                    if !gpu.name.isEmpty {
+                        Text(gpu.name)
+                            .font(Theme.Fonts.dataValue)
+                            .foregroundStyle(Theme.Colors.textSecondary)
+                            .lineLimit(1)
+                    }
+                    StatLabel(title: "Utilization", value: Formatters.percentage(gpu.utilizationPercentage))
+                }
             }
         }
     }
