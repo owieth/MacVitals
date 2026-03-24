@@ -47,7 +47,7 @@ struct ProcessesTabView: View {
 
             processHeader
 
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 0) {
                     ForEach(filteredProcesses) { process in
                         processRow(process)

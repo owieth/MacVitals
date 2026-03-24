@@ -5,7 +5,7 @@ struct DashboardTabView: View {
     @EnvironmentObject var preferences: UserPreferences
 
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(spacing: Theme.Spacing.sectionSpacing) {
                 OverviewSection(
                     snapshot: monitor.snapshot,
