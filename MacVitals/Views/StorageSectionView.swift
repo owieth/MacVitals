@@ -4,7 +4,9 @@ struct StorageSectionView: View {
     let storage: StorageInfo
 
     var body: some View {
-        DisclosureGroup("Storage") {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Storage")
+                .font(.headline)
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text("\(Formatters.bytesDecimal(storage.used)) / \(Formatters.bytesDecimal(storage.total))")
@@ -25,7 +27,6 @@ struct StorageSectionView: View {
                     StatLabel(title: "Write", value: Formatters.bytesPerSecond(storage.writeBytesPerSec))
                 }
             }
-            .padding(.top, 4)
         }
     }
 }

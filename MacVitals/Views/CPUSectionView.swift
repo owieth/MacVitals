@@ -4,7 +4,9 @@ struct CPUSectionView: View {
     let cpu: CPUInfo
 
     var body: some View {
-        DisclosureGroup("CPU") {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("CPU")
+                .font(.headline)
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 16) {
                     StatLabel(title: "Total", value: Formatters.percentage(cpu.totalUsage))
@@ -42,7 +44,6 @@ struct CPUSectionView: View {
                         .lineLimit(1)
                 }
             }
-            .padding(.top, 4)
         }
     }
 

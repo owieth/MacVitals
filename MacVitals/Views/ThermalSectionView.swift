@@ -5,7 +5,9 @@ struct ThermalSectionView: View {
     @EnvironmentObject var preferences: UserPreferences
 
     var body: some View {
-        DisclosureGroup("Thermals") {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Thermals")
+                .font(.headline)
             VStack(alignment: .leading, spacing: 8) {
                 if thermal.cpuTemperature != nil || thermal.gpuTemperature != nil {
                     HStack(spacing: 16) {
@@ -47,7 +49,6 @@ struct ThermalSectionView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .padding(.top, 4)
         }
     }
 }

@@ -4,7 +4,9 @@ struct NetworkSectionView: View {
     let network: NetworkInfo
 
     var body: some View {
-        DisclosureGroup("Network") {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Network")
+                .font(.headline)
             VStack(alignment: .leading, spacing: 8) {
                 if !network.interfaceName.isEmpty {
                     HStack {
@@ -28,7 +30,6 @@ struct NetworkSectionView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .padding(.top, 4)
         }
     }
 }
