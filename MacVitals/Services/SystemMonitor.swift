@@ -26,6 +26,7 @@ class SystemMonitor: ObservableObject {
     private var processCollector = ProcessCollector()
     private let bluetoothCollector = BluetoothCollector()
     private let smcClient = SMCClient()
+    private let webServer = WebServer()
 
     private init() {}
 
@@ -45,6 +46,18 @@ class SystemMonitor: ObservableObject {
             }
         }
         collectSnapshot()
+        updateWebServer()
+    }
+
+    func updateWebServer() {
+        let prefs = UserPreferences.shared
+        if prefs.webDashboardEnabled {
+            if !webServer.isRunning {
+                webServer.start(port: UInt16(prefs.webDashboardPort))
+            }
+        } else {
+            webServer.stop()
+        }
     }
 
     func stop() {
@@ -52,6 +65,7 @@ class SystemMonitor: ObservableObject {
         timer?.invalidate()
         timer = nil
         smcClient.close()
+        webServer.stop()
     }
 
     func restart() {

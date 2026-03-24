@@ -132,6 +132,14 @@ class UserPreferences: ObservableObject {
         didSet { UserDefaults.standard.set(batteryAlertThreshold, forKey: "batteryAlertThreshold") }
     }
 
+    @Published var webDashboardEnabled: Bool {
+        didSet { UserDefaults.standard.set(webDashboardEnabled, forKey: "webDashboardEnabled") }
+    }
+
+    @Published var webDashboardPort: Int {
+        didSet { UserDefaults.standard.set(webDashboardPort, forKey: "webDashboardPort") }
+    }
+
     static let defaultSectionOrder = ["cpu", "memory", "storage", "battery", "network", "gpu", "thermal", "bluetooth"]
 
     private init() {
@@ -168,6 +176,8 @@ class UserPreferences: ObservableObject {
         self.memoryAlertEnabled = UserDefaults.standard.object(forKey: "memoryAlertEnabled") as? Bool ?? true
         self.storageAlertThreshold = UserDefaults.standard.object(forKey: "storageAlertThreshold") as? Double ?? 95
         self.batteryAlertThreshold = UserDefaults.standard.object(forKey: "batteryAlertThreshold") as? Double ?? 20
+        self.webDashboardEnabled = UserDefaults.standard.bool(forKey: "webDashboardEnabled")
+        self.webDashboardPort = UserDefaults.standard.object(forKey: "webDashboardPort") as? Int ?? 8765
     }
 
     private func updateLaunchAtLogin() {
