@@ -6,7 +6,8 @@ struct GPUSectionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("GPU")
-                .font(.headline)
+                .font(Theme.Fonts.sectionTitle)
+                .foregroundStyle(Theme.Colors.textPrimary)
             VStack(alignment: .leading, spacing: 8) {
                 if !gpu.name.isEmpty {
                     Text(gpu.name)

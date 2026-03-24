@@ -5,52 +5,71 @@ struct MenuBarView: View {
     @EnvironmentObject var preferences: UserPreferences
 
     var body: some View {
-        VStack(spacing: 0) {
-            headerView
-            Divider()
-            ScrollView {
-                VStack(spacing: 12) {
-                    OverviewSection(
-                        snapshot: monitor.snapshot,
-                        cpuHistory: monitor.cpuHistory,
-                        memoryHistory: monitor.memoryHistory
-                    )
+        ZStack {
+            Theme.Gradients.background
+                .ignoresSafeArea()
 
-                    if preferences.showCPUSection {
-                        CPUSectionView(cpu: monitor.snapshot?.cpu ?? .empty)
-                    }
+            VStack(spacing: 0) {
+                headerView
+                Divider()
+                    .overlay(Theme.Colors.cardBorder)
+                ScrollView {
+                    VStack(spacing: Theme.Spacing.sectionSpacing) {
+                        OverviewSection(
+                            snapshot: monitor.snapshot,
+                            cpuHistory: monitor.cpuHistory,
+                            memoryHistory: monitor.memoryHistory
+                        )
+                        .cardStyle()
 
-                    if preferences.showMemorySection {
-                        MemorySectionView(memory: monitor.snapshot?.memory ?? .empty)
-                    }
+                        if preferences.showCPUSection {
+                            CPUSectionView(cpu: monitor.snapshot?.cpu ?? .empty)
+                                .cardStyle()
+                        }
 
-                    if preferences.showStorageSection {
-                        StorageSectionView(storage: monitor.snapshot?.storage ?? .empty)
-                    }
+                        if preferences.showMemorySection {
+                            MemorySectionView(memory: monitor.snapshot?.memory ?? .empty)
+                                .cardStyle()
+                        }
 
-                    if preferences.showBatterySection, let battery = monitor.snapshot?.battery {
-                        BatterySectionView(battery: battery)
-                    }
+                        if preferences.showStorageSection {
+                            StorageSectionView(storage: monitor.snapshot?.storage ?? .empty)
+                                .cardStyle()
+                        }
 
-                    if preferences.showNetworkSection {
-                        NetworkSectionView(network: monitor.snapshot?.network ?? .empty)
-                    }
+                        if preferences.showBatterySection, let battery = monitor.snapshot?.battery {
+                            BatterySectionView(battery: battery)
+                                .cardStyle()
+                        }
 
-                    if let gpu = monitor.snapshot?.gpu {
-                        GPUSectionView(gpu: gpu)
-                    }
+                        if preferences.showNetworkSection {
+                            NetworkSectionView(network: monitor.snapshot?.network ?? .empty)
+                                .cardStyle()
+                        }
 
-                    if preferences.showThermalSection {
-                        ThermalSectionView(thermal: monitor.snapshot?.thermal ?? .empty)
+                        if let gpu = monitor.snapshot?.gpu {
+                            GPUSectionView(gpu: gpu)
+                                .cardStyle()
+                        }
+
+                        if preferences.showThermalSection {
+                            ThermalSectionView(thermal: monitor.snapshot?.thermal ?? .empty)
+                                .cardStyle()
+                        }
                     }
+                    .padding(Theme.Spacing.contentPadding)
                 }
-                .padding(16)
+
+                GradientBar()
+                    .padding(.horizontal, Theme.Spacing.contentPadding)
+                    .padding(.bottom, 8)
             }
         }
         .frame(
             width: Constants.popoverWidth,
             height: Constants.popoverHeight
         )
+        .preferredColorScheme(.dark)
     }
 
     private var headerView: some View {
@@ -58,25 +77,26 @@ struct MenuBarView: View {
             Button(action: { WindowManager.shared.openSettingsWindow() }) {
                 Image(systemName: "gear")
                     .font(.system(size: 14))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Colors.textSecondary)
             }
             .buttonStyle(.plain)
 
             Spacer()
 
             Text(Constants.appName)
-                .font(.headline)
+                .font(Theme.Fonts.sectionTitle)
+                .foregroundStyle(Theme.Colors.textPrimary)
 
             Spacer()
 
             Button(action: { Constants.openGitHub() }) {
                 Image(systemName: "arrow.up.right.square")
                     .font(.system(size: 14))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Colors.textSecondary)
             }
             .buttonStyle(.plain)
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, Theme.Spacing.contentPadding)
         .padding(.vertical, 12)
     }
 
