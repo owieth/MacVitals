@@ -14,8 +14,6 @@ struct MenuBarView: View {
                 Divider()
                     .overlay(Theme.Colors.cardBorder)
                 tabBar
-                Divider()
-                    .overlay(Theme.Colors.cardBorder)
 
                 tabContent
             }
