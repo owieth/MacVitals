@@ -10,7 +10,9 @@ class SystemMonitor: ObservableObject {
     var isPopoverVisible = false
     @Published var cpuHistory: [Double] = []
     @Published var memoryHistory: [Double] = []
-    private let maxHistorySize = 60
+    @Published var networkDownloadHistory: [Double] = []
+    @Published var networkUploadHistory: [Double] = []
+    private let maxHistorySize = 120
 
     private var timer: Timer?
     private var tickCount = 0
@@ -87,6 +89,10 @@ class SystemMonitor: ObservableObject {
         if cpuHistory.count > maxHistorySize { cpuHistory.removeFirst() }
         memoryHistory.append(memory.usagePercentage)
         if memoryHistory.count > maxHistorySize { memoryHistory.removeFirst() }
+        networkDownloadHistory.append(Double(network.downloadBytesPerSec))
+        if networkDownloadHistory.count > maxHistorySize { networkDownloadHistory.removeFirst() }
+        networkUploadHistory.append(Double(network.uploadBytesPerSec))
+        if networkUploadHistory.count > maxHistorySize { networkUploadHistory.removeFirst() }
 
         let bluetooth = tickCount % 3 == 0 ? bluetoothCollector.collect() : (snapshot?.bluetooth ?? [])
 
