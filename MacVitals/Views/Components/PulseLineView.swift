@@ -1,14 +1,22 @@
 import SwiftUI
 
-struct SparklineView: View {
+struct PulseLineView: View {
     let data: [Double]
     let maxValue: Double
-    let color: Color
+    let gradient: LinearGradient
 
-    init(data: [Double], maxValue: Double = 100, color: Color = .accentColor) {
+    init(
+        data: [Double],
+        maxValue: Double = 100,
+        gradient: LinearGradient = LinearGradient(
+            colors: [Theme.Colors.accentCyan, .green],
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+    ) {
         self.data = data
         self.maxValue = maxValue
-        self.color = color
+        self.gradient = gradient
     }
 
     var body: some View {
@@ -17,17 +25,21 @@ struct SparklineView: View {
                 let points = buildPoints(in: geometry.size)
 
                 ZStack {
-                    fillPath(points: points, height: geometry.size.height)
+                    fillPath(points: points)
                         .fill(
                             LinearGradient(
-                                colors: [color.opacity(0.2), color.opacity(0.0)],
+                                colors: [
+                                    Theme.Colors.accentCyan.opacity(0.15),
+                                    Theme.Colors.accentCyan.opacity(0.0),
+                                ],
                                 startPoint: .top,
                                 endPoint: .bottom
                             )
                         )
 
                     linePath(points: points)
-                        .stroke(color, lineWidth: 1.5)
+                        .stroke(gradient, lineWidth: 1.5)
+                        .shadow(color: Theme.Colors.accentCyan.opacity(0.4), radius: 3)
                 }
             }
         }
@@ -53,16 +65,20 @@ struct SparklineView: View {
         }
     }
 
-    private func fillPath(points: [CGPoint], height: CGFloat) -> Path {
+    private func fillPath(points: [CGPoint]) -> Path {
         Path { path in
             guard let first = points.first, let last = points.last else { return }
-            path.move(to: CGPoint(x: first.x, y: height))
+            path.move(to: CGPoint(x: first.x, y: maxY(points)))
             path.addLine(to: first)
             for point in points.dropFirst() {
                 path.addLine(to: point)
             }
-            path.addLine(to: CGPoint(x: last.x, y: height))
+            path.addLine(to: CGPoint(x: last.x, y: maxY(points)))
             path.closeSubpath()
         }
+    }
+
+    private func maxY(_ points: [CGPoint]) -> CGFloat {
+        points.map(\.y).max() ?? 0
     }
 }

@@ -8,48 +8,93 @@ struct CPUSectionView: View {
             Text("CPU")
                 .font(Theme.Fonts.sectionTitle)
                 .foregroundStyle(Theme.Colors.textPrimary)
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 16) {
-                    StatLabel(title: "Total", value: Formatters.percentage(cpu.totalUsage))
-                    StatLabel(title: "User", value: Formatters.percentage(cpu.userUsage))
-                    StatLabel(title: "System", value: Formatters.percentage(cpu.systemUsage))
-                }
 
-                if !cpu.coreUsages.isEmpty {
-                    let columns = cpu.coreUsages.count > 8 ? 2 : 1
-                    let gridColumns = Array(repeating: GridItem(.flexible(), spacing: 8), count: columns)
-                    LazyVGrid(columns: gridColumns, spacing: 2) {
-                        ForEach(Array(cpu.coreUsages.enumerated()), id: \.offset) { index, usage in
-                            HStack(spacing: 4) {
-                                Text("\(index)")
-                                    .font(.system(size: 9).monospacedDigit())
-                                    .foregroundStyle(.secondary)
-                                    .frame(width: 20, alignment: .trailing)
-                                ProgressView(value: min(max(usage / 100, 0), 1))
-                                    .tint(coreColor(usage))
-                                    .accessibilityLabel("Core \(index)")
-                                    .accessibilityValue(Formatters.percentage(usage))
-                                Text(Formatters.percentage(usage))
-                                    .font(.system(size: 9).monospacedDigit())
-                                    .foregroundStyle(.secondary)
-                                    .frame(width: 30, alignment: .trailing)
+            HStack(spacing: 16) {
+                StatLabel(title: "Total", value: Formatters.percentage(cpu.totalUsage))
+                StatLabel(title: "User", value: Formatters.percentage(cpu.userUsage))
+                StatLabel(title: "System", value: Formatters.percentage(cpu.systemUsage))
+            }
+
+            if !cpu.coreUsages.isEmpty {
+                VStack(spacing: 3) {
+                    ForEach(Array(cpu.coreUsages.enumerated()), id: \.offset) { index, usage in
+                        CoreBarRow(index: index, usage: usage)
+                    }
+                }
+            }
+
+            if !cpu.topProcesses.isEmpty {
+                DisclosureGroup {
+                    VStack(alignment: .leading, spacing: 4) {
+                        ForEach(cpu.topProcesses, id: \.pid) { process in
+                            HStack {
+                                Text(process.name)
+                                    .font(Theme.Fonts.caption)
+                                    .foregroundStyle(Theme.Colors.textSecondary)
+                                    .lineLimit(1)
+                                Spacer()
+                                Text(Formatters.percentage(process.cpuUsage))
+                                    .font(Theme.Fonts.caption.monospacedDigit())
+                                    .foregroundStyle(Theme.Colors.textTertiary)
                             }
                         }
                     }
+                } label: {
+                    Text("Top Processes")
+                        .font(Theme.Fonts.dataLabel)
+                        .foregroundStyle(Theme.Colors.textSecondary)
                 }
-
-                if !cpu.topProcesses.isEmpty {
-                    Text("Top: " + cpu.topProcesses.map { "\($0.name) \(Formatters.percentage($0.cpuUsage))" }.joined(separator: " · "))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
+                .tint(Theme.Colors.textTertiary)
             }
         }
     }
+}
 
-    private func coreColor(_ usage: Double) -> Color {
-        .forUsage(usage)
+private struct CoreBarRow: View {
+    let index: Int
+    let usage: Double
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Text("\(index)")
+                .font(Theme.Fonts.caption.monospacedDigit())
+                .foregroundStyle(Theme.Colors.textTertiary)
+                .frame(width: 18, alignment: .trailing)
+
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(Theme.Colors.cardBorder)
+                        .frame(height: 6)
+
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(barGradient)
+                        .frame(width: max(geometry.size.width * clampedFraction, 2), height: 6)
+                }
+                .frame(maxHeight: .infinity, alignment: .center)
+            }
+            .frame(height: 10)
+
+            Text(Formatters.percentage(usage))
+                .font(Theme.Fonts.caption.monospacedDigit())
+                .foregroundStyle(Theme.Colors.textSecondary)
+                .frame(width: 32, alignment: .trailing)
+        }
+        .accessibilityLabel("Core \(index)")
+        .accessibilityValue(Formatters.percentage(usage))
+    }
+
+    private var clampedFraction: CGFloat {
+        CGFloat(min(max(usage / 100, 0), 1))
+    }
+
+    private var barGradient: LinearGradient {
+        let color = Theme.Colors.forUsage(usage)
+        return LinearGradient(
+            colors: [color.opacity(0.6), color],
+            startPoint: .leading,
+            endPoint: .trailing
+        )
     }
 }
 
