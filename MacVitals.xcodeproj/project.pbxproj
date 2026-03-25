@@ -22,7 +22,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		EXCEPTION_SET /* Exceptions for "MacVitals/MacVitals" folder in "MacVitals" target */ = {
+		EXCEPTION_SET /* Exceptions for "MacVitals" folder in "MacVitals" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -32,10 +32,10 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		SOURCE_ROOT /* MacVitals/MacVitals */ = {
+		SOURCE_ROOT /* MacVitals */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				EXCEPTION_SET /* Exceptions for "MacVitals/MacVitals" folder in "MacVitals" target */,
+				EXCEPTION_SET /* Exceptions for "MacVitals" folder in "MacVitals" target */,
 			);
 			path = MacVitals;
 			sourceTree = "<group>";
@@ -77,7 +77,7 @@
 		ROOT_GROUP = {
 			isa = PBXGroup;
 			children = (
-				SOURCE_ROOT /* MacVitals/MacVitals */,
+				SOURCE_ROOT /* MacVitals */,
 				TEST_SOURCE_ROOT /* MacVitalsTests */,
 				PRODUCTS_GROUP /* Products */,
 			);
@@ -99,7 +99,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				SOURCE_ROOT /* MacVitals/MacVitals */,
+				SOURCE_ROOT /* MacVitals */,
 			);
 			name = MacVitals;
 			productName = MacVitals;
