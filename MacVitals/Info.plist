@@ -28,6 +28,8 @@
 	<false/>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
+	<key>CommitHash</key>
+	<string>dev</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 </dict>
