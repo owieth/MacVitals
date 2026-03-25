@@ -126,15 +126,18 @@ jobs:
       - name: Create DMG
         run: |
           TAG=${{ github.event.release.tag_name }}
-          cd build/export
-          mkdir -p dmg_staging
-          cp -R MacVitals.app dmg_staging/
-          ln -s /Applications dmg_staging/Applications
-          hdiutil create \
-            -volname "MacVitals" \
-            -srcfolder dmg_staging \
-            -ov -format UDZO \
-            -o "../../MacVitals-${TAG}.dmg"
+          brew install create-dmg
+          create-dmg \
+            --volname "MacVitals" \
+            --background "assets/dmg-background.png" \
+            --window-pos 200 120 \
+            --window-size 700 400 \
+            --icon-size 100 \
+            --icon "MacVitals.app" 180 190 \
+            --hide-extension "MacVitals.app" \
+            --app-drop-link 520 190 \
+            "MacVitals-${TAG}.dmg" \
+            "build/export/MacVitals.app"
 
       - name: Notarize DMG
         env:
