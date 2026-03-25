@@ -113,6 +113,7 @@ struct ProcessesTabView: View {
 
     private func processRow(_ process: ProcessSnapshot) -> some View {
         HStack {
+            ProcessIconView(process: process)
             Text(process.name)
                 .font(Theme.Fonts.caption)
                 .foregroundStyle(Theme.Colors.textSecondary)

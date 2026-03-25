@@ -146,7 +146,7 @@ struct MacVitalsTests {
     }
 
     @Test func processSnapshotIdentifiable() async throws {
-        let process = ProcessSnapshot(pid: 123, name: "test", cpuUsage: 5.0, memoryBytes: 1024)
+        let process = ProcessSnapshot(pid: 123, name: "test", executablePath: "/usr/bin/test", cpuUsage: 5.0, memoryBytes: 1024)
         #expect(process.id == 123)
         #expect(process.name == "test")
     }

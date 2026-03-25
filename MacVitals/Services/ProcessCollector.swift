@@ -73,6 +73,6 @@ struct ProcessCollector {
         }
 
         let memoryBytes = UInt64(taskInfo.pti_resident_size)
-        return ProcessSnapshot(pid: pid, name: name, cpuUsage: cpuUsage, memoryBytes: memoryBytes)
+        return ProcessSnapshot(pid: pid, name: name, executablePath: path, cpuUsage: cpuUsage, memoryBytes: memoryBytes)
     }
 }
