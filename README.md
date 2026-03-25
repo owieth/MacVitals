@@ -17,7 +17,7 @@ A lightweight macOS menu bar app for monitoring system vitals — CPU, Memory, S
 
 ## Screenshots
 
-_Coming soon_
+![MacVitals Icon](docs/icon-512.png)
 
 ## Requirements
 
