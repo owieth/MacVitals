@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MacVitals — macOS System Monitor</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖥</text></svg>">
+  <link rel="icon" type="image/png" href="icon-128.png">
   <meta name="description" content="MacVitals is a free, open-source macOS menu bar app for monitoring CPU, memory, storage, battery, thermals, network, and GPU. Lightweight and entirely local.">
   <link rel="canonical" href="https://owieth.github.io/MacVitals/">
   <meta name="theme-color" content="#0071e3" media="(prefers-color-scheme: light)">
@@ -17,11 +17,13 @@
   <meta property="og:url" content="https://owieth.github.io/MacVitals/">
   <meta property="og:locale" content="en_US">
   <meta property="og:site_name" content="MacVitals">
+  <meta property="og:image" content="https://owieth.github.io/MacVitals/icon-512.png">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="MacVitals — macOS System Monitor">
   <meta name="twitter:description" content="Free, open-source macOS menu bar app for monitoring CPU, memory, storage, battery, thermals, network, and GPU. Lightweight and entirely local.">
+  <meta name="twitter:image" content="https://owieth.github.io/MacVitals/icon-512.png">
 
   <style>
     :root {
@@ -223,6 +225,7 @@
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "macOS 15+",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "image": "https://owieth.github.io/MacVitals/icon-512.png",
     "downloadUrl": "https://github.com/owieth/MacVitals/releases/latest",
     "author": { "@type": "Person", "name": "Olivier Winkler", "url": "https://github.com/owieth" }
   }
@@ -234,11 +237,7 @@
 
     <!-- Hero -->
     <div class="hero">
-      <svg class="hero-icon" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="128" height="128" rx="28" fill="var(--accent)"/>
-        <path d="M32 80 L48 52 L60 68 L76 36 L96 80" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        <circle cx="76" cy="36" r="5" fill="#fff"/>
-      </svg>
+      <img class="hero-icon" src="icon-512.png" alt="MacVitals icon" width="128" height="128">
       <h1>MacVitals</h1>
       <p>A lightweight macOS menu bar app for monitoring system vitals &mdash; CPU, memory, storage, battery, thermals, network, and GPU.</p>
       <span class="badge">macOS 15+ &middot; Free &middot; Open Source</span>
