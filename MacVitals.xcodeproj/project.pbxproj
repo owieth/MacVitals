@@ -22,7 +22,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		EXCEPTION_SET /* Exceptions for "MacVitals/MacVitals" folder in "MacVitals" target */ = {
+		EXCEPTION_SET /* Exceptions for "MacVitals" folder in "MacVitals" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -32,10 +32,10 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		SOURCE_ROOT /* MacVitals/MacVitals */ = {
+		SOURCE_ROOT /* MacVitals */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				EXCEPTION_SET /* Exceptions for "MacVitals/MacVitals" folder in "MacVitals" target */,
+				EXCEPTION_SET /* Exceptions for "MacVitals" folder in "MacVitals" target */,
 			);
 			path = MacVitals;
 			sourceTree = "<group>";
@@ -77,7 +77,7 @@
 		ROOT_GROUP = {
 			isa = PBXGroup;
 			children = (
-				SOURCE_ROOT /* MacVitals/MacVitals */,
+				SOURCE_ROOT /* MacVitals */,
 				TEST_SOURCE_ROOT /* MacVitalsTests */,
 				PRODUCTS_GROUP /* Products */,
 			);
@@ -99,7 +99,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				SOURCE_ROOT /* MacVitals/MacVitals */,
+				SOURCE_ROOT /* MacVitals */,
 			);
 			name = MacVitals;
 			productName = MacVitals;
@@ -339,14 +339,17 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MacVitals/Info.plist;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Olivier Winkler. All rights reserved.";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.olivierwinkler.MacVitals;
+				PRODUCT_BUNDLE_IDENTIFIER = com.macvitals.MacVitals;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = MacVitals/Utilities/MachCompat.h;
@@ -367,14 +370,17 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MacVitals/Info.plist;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Olivier Winkler. All rights reserved.";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.olivierwinkler.MacVitals;
+				PRODUCT_BUNDLE_IDENTIFIER = com.macvitals.MacVitals;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = MacVitals/Utilities/MachCompat.h;
