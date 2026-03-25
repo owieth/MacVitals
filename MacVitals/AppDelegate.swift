@@ -10,14 +10,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var isQuittingFromMenu = false
     private var cancellable: AnyCancellable?
 
+    private func makeStatusBarIcon() -> NSImage? {
+        guard let appIcon = NSImage(named: "AppIcon") else { return nil }
+        let size = NSSize(width: 18, height: 18)
+        let resized = NSImage(size: size)
+        resized.lockFocus()
+        appIcon.draw(
+            in: NSRect(origin: .zero, size: size),
+            from: NSRect(origin: .zero, size: appIcon.size),
+            operation: .copy,
+            fraction: 1.0
+        )
+        resized.unlockFocus()
+        resized.isTemplate = false
+        return resized
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
         if let button = statusItem?.button {
-            button.image = NSImage(
-                systemSymbolName: "gauge.with.dots.needle.bottom.50percent",
-                accessibilityDescription: "MacVitals"
-            )
+            button.image = makeStatusBarIcon()
             button.imagePosition = .imageLeading
             button.action = #selector(statusItemClicked)
             button.target = self
@@ -111,18 +124,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         switch mode {
         case .iconOnly:
             button.title = ""
-            button.image = NSImage(
-                systemSymbolName: "gauge.with.dots.needle.bottom.50percent",
-                accessibilityDescription: "MacVitals"
-            )
+            button.image = makeStatusBarIcon()
         case .iconAndCPU:
             if let snapshot = SystemMonitor.shared.snapshot {
                 button.title = " " + Formatters.percentage(snapshot.cpu.totalUsage)
             }
-            button.image = NSImage(
-                systemSymbolName: "gauge.with.dots.needle.bottom.50percent",
-                accessibilityDescription: "MacVitals"
-            )
+            button.image = makeStatusBarIcon()
         case .iconAndTemp:
             if let snapshot = SystemMonitor.shared.snapshot,
                let temp = snapshot.thermal.cpuTemperature {
@@ -130,10 +137,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             } else {
                 button.title = " --"
             }
-            button.image = NSImage(
-                systemSymbolName: "gauge.with.dots.needle.bottom.50percent",
-                accessibilityDescription: "MacVitals"
-            )
+            button.image = makeStatusBarIcon()
         case .cpuGraph:
             button.title = ""
             if let snapshot = SystemMonitor.shared.snapshot, !snapshot.cpu.coreUsages.isEmpty {
