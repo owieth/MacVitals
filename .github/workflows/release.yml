@@ -123,18 +123,53 @@ jobs:
           xcrun stapler staple MacVitals.app
           rm MacVitals.zip
 
-      - name: Package release
+      - name: Create DMG
         run: |
           TAG=${{ github.event.release.tag_name }}
           cd build/export
-          zip -r "../../MacVitals-${TAG}.zip" MacVitals.app
+          mkdir -p dmg_staging
+          cp -R MacVitals.app dmg_staging/
+          ln -s /Applications dmg_staging/Applications
+          hdiutil create \
+            -volname "MacVitals" \
+            -srcfolder dmg_staging \
+            -ov -format UDZO \
+            -o "../../MacVitals-${TAG}.dmg"
+
+      - name: Notarize DMG
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          TAG=${{ github.event.release.tag_name }}
+
+          SUBMIT_OUTPUT=$(xcrun notarytool submit "MacVitals-${TAG}.dmg" \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_ID_PASSWORD" \
+            --team-id "$APPLE_TEAM_ID" \
+            --wait 2>&1) || true
+          echo "$SUBMIT_OUTPUT"
+
+          SUBMISSION_ID=$(echo "$SUBMIT_OUTPUT" | grep "id:" | head -1 | awk '{print $2}')
+
+          if echo "$SUBMIT_OUTPUT" | grep -q "status: Invalid"; then
+            echo "DMG notarization failed. Fetching log..."
+            xcrun notarytool log "$SUBMISSION_ID" \
+              --apple-id "$APPLE_ID" \
+              --password "$APPLE_ID_PASSWORD" \
+              --team-id "$APPLE_TEAM_ID"
+            exit 1
+          fi
+
+          xcrun stapler staple "MacVitals-${TAG}.dmg"
 
       - name: Upload to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG=${{ github.event.release.tag_name }}
-          gh release upload "$TAG" "MacVitals-${TAG}.zip" --clobber
+          gh release upload "$TAG" "MacVitals-${TAG}.dmg" --clobber
 
       - name: Cleanup keychain and provisioning profiles
         if: always()
