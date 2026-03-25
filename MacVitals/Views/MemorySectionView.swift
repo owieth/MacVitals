@@ -35,6 +35,7 @@ struct MemorySectionView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         ForEach(memory.topProcesses, id: \.pid) { process in
                             HStack {
+                                ProcessIconView(process: process)
                                 Text(process.name)
                                     .font(Theme.Fonts.caption)
                                     .foregroundStyle(Theme.Colors.textSecondary)
