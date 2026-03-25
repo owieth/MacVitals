@@ -84,7 +84,7 @@ jobs:
           PROFILE_NAME=$(/usr/libexec/PlistBuddy -c "Print :Name" /dev/stdin <<< "$(security cms -D -i /tmp/build.provisionprofile)")
           rm /tmp/build.provisionprofile
           /usr/libexec/PlistBuddy -c "Add :provisioningProfiles dict" ExportOptions.plist
-          /usr/libexec/PlistBuddy -c "Add :provisioningProfiles:com.olivierwinkler.MacVitals string $PROFILE_NAME" ExportOptions.plist
+          /usr/libexec/PlistBuddy -c "Add :provisioningProfiles:com.macvitals.MacVitals string $PROFILE_NAME" ExportOptions.plist
 
       - name: Export app
         run: |
