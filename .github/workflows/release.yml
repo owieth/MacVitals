@@ -133,6 +133,7 @@ jobs:
             --window-pos 200 120 \
             --window-size 700 400 \
             --icon-size 100 \
+            --text-size 1 \
             --icon "MacVitals.app" 180 190 \
             --hide-extension "MacVitals.app" \
             --app-drop-link 520 190 \
