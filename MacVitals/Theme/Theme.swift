@@ -3,14 +3,14 @@ import SwiftUI
 enum Theme {
 
     enum Colors {
-        static let backgroundDark = Color(red: 0.02, green: 0.02, blue: 0.05)
-        static let backgroundNavy = Color(red: 0.06, green: 0.07, blue: 0.14)
+        static let backgroundDark = Color(red: 0.04, green: 0.02, blue: 0.01)
+        static let backgroundNavy = Color(red: 0.09, green: 0.05, blue: 0.03)
         static let cardBackground = Color.white.opacity(0.05)
         static let cardBorder = Color.white.opacity(0.08)
 
-        static let accentCyan = Color(red: 0.0, green: 0.8, blue: 0.9)
-        static let warningOrange = Color.orange
-        static let criticalRed = Color.red
+        static let accentCyan = Color(red: 0.82, green: 0.52, blue: 0.08)
+        static let warningOrange = Color(red: 0.90, green: 0.38, blue: 0.08)
+        static let criticalRed = Color(red: 0.78, green: 0.12, blue: 0.06)
         static let nominalGreen = Color.green
 
         static let textPrimary = Color.white
@@ -34,9 +34,9 @@ enum Theme {
 
         static let statusBar = LinearGradient(
             colors: [
-                Color(red: 0.0, green: 0.8, blue: 0.9),
-                Color(red: 0.5, green: 0.2, blue: 0.8),
-                Color(red: 0.9, green: 0.2, blue: 0.3),
+                Color(red: 0.82, green: 0.60, blue: 0.08),
+                Color(red: 0.80, green: 0.32, blue: 0.08),
+                Color(red: 0.75, green: 0.12, blue: 0.06),
             ],
             startPoint: .leading,
             endPoint: .trailing

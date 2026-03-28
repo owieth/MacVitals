@@ -66,7 +66,10 @@ enum RingGradients {
     }
 
     static let cpu = AngularGradient(
-        colors: [Theme.Colors.accentCyan.opacity(0.3), Theme.Colors.accentCyan],
+        colors: [
+            Color(red: 0.82, green: 0.60, blue: 0.08).opacity(0.3),
+            Color(red: 0.75, green: 0.12, blue: 0.06),
+        ],
         center: .center,
         startAngle: .degrees(-90),
         endAngle: .degrees(270)
